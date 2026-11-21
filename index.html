@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#060a1c">
+<title>Die Sternenstaub-Reise</title>
+<!-- UFO21 Sternenstaub-Kinder 0.1.0 (Claude, 20.11.2026): Die App ist die Reise.
+     Weltraum zum Wischen, eigenes UFO, Planeten = Stationen (Andys Seiten), Sternenstaub sammeln.
+     Alles in dieser Datei, keine Bibliotheken; Fortschritt nur lokal auf dem Gerät. -->
+<style>
+  :root{--bg:#060a1c;--text:#f3f5ff;--leise:#aab3e0;--gelb:#ffd54a;--mint:#5ef0c0;--rosa:#ff8fb8;--blau:#7cc4ff;--lila:#b48cff;--glas:rgba(20,28,70,.72);--rand:rgba(160,180,255,.25)}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  canvas{position:fixed;inset:0;width:100vw;height:100vh;touch-action:none;display:block}
+  .hud{position:fixed;top:max(12px,env(safe-area-inset-top));left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;z-index:5}
+  .pill{pointer-events:auto;cursor:pointer;display:flex;align-items:center;gap:8px;background:var(--glas);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--rand);border-radius:99px;padding:9px 16px;font-weight:700;font-size:18px}
+  .pill small{font-weight:500;color:var(--leise);font-size:13px}
+  #staub b{color:var(--gelb);font-size:22px;min-width:2ch;display:inline-block;text-align:right}
+  #staub.plopp b{animation:plopp .5s}
+  @keyframes plopp{40%{transform:scale(1.5)}}
+  .knopf{pointer-events:auto;background:var(--glas);border:1px solid var(--rand);color:var(--text);border-radius:99px;width:46px;height:46px;font-size:22px;display:grid;place-items:center;cursor:pointer}
+  .rechts{display:flex;gap:10px;align-items:center}
+  #tipp{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--glas);border:1px solid var(--rand);border-radius:99px;padding:10px 18px;font-size:15px;color:var(--leise);z-index:4;transition:opacity .6s;white-space:nowrap}
+  /* Planeten-Fenster */
+  #fenster{position:fixed;left:0;right:0;bottom:0;z-index:10;transform:translateY(105%);transition:transform .45s cubic-bezier(.2,.9,.25,1.1);padding:0 12px max(12px,env(safe-area-inset-bottom))}
+  #fenster.auf{transform:none}
+  .blatt{max-width:980px;margin:0 auto;background:linear-gradient(170deg,rgba(32,42,100,.94),rgba(14,20,52,.96));border:1px solid var(--rand);border-radius:28px;padding:20px 20px 18px;box-shadow:0 -10px 60px rgba(0,0,0,.5)}
+  .kopf{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .kopf .gross{font-size:52px;line-height:1}
+  .kopf h2{font-size:26px;line-height:1.15}
+  .kopf p{color:var(--leise);font-size:15px;margin-top:3px}
+  .zu{margin-left:auto;align-self:flex-start}
+  .stationen{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:14px}
+  .station{display:flex;gap:14px;align-items:center;text-align:left;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:14px;color:inherit;font:inherit;cursor:pointer;transition:transform .12s,border-color .12s}
+  .station:active{transform:scale(.97)}
+  .station .e{font-size:40px;line-height:1}
+  .station b{display:block;font-size:18px}
+  .station span{display:block;color:var(--leise);font-size:14px;margin-top:2px;line-height:1.3}
+  .station .haken{margin-left:auto;font-size:20px;opacity:.9}
+  /* Start / Toasts */
+  #start{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 30%,rgba(40,50,130,.6),rgba(6,10,28,.92));padding:20px}
+  #start.weg{animation:weg .7s forwards}
+  @keyframes weg{to{opacity:0;visibility:hidden}}
+  .karte{width:min(560px,100%);text-align:center;background:var(--glas);border:1px solid var(--rand);border-radius:32px;padding:30px 24px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .karte .ufo{font-size:84px;display:inline-block;animation:schweben 3s ease-in-out infinite}
+  @keyframes schweben{50%{transform:translateY(-10px) rotate(-5deg)}}
+  .karte h1{font-size:clamp(28px,6vw,42px);margin:10px 0 6px}
+  .karte p{color:var(--leise);font-size:17px;line-height:1.4}
+  .karte input{margin-top:18px;width:100%;font:inherit;font-size:22px;text-align:center;padding:14px;border-radius:18px;border:2px solid var(--rand);background:rgba(0,0,0,.25);color:var(--text);user-select:text;-webkit-user-select:text}
+  .farben{display:flex;justify-content:center;gap:14px;margin:18px 0 6px}
+  .farbe{width:52px;height:52px;border-radius:50%;border:4px solid transparent;cursor:pointer}
+  .farbe.an{border-color:#fff;transform:scale(1.12)}
+  .los{margin-top:20px;font:inherit;font-size:22px;font-weight:800;padding:16px 40px;border-radius:99px;border:0;background:linear-gradient(90deg,var(--gelb),#ffb347);color:#1a1300;cursor:pointer;box-shadow:0 8px 30px rgba(255,200,70,.35)}
+  .los:active{transform:scale(.96)}
+  #toast{position:fixed;top:84px;left:50%;transform:translate(-50%,-20px);opacity:0;z-index:15;background:linear-gradient(90deg,rgba(255,213,74,.95),rgba(255,160,90,.95));color:#1d1300;font-weight:800;font-size:18px;padding:12px 22px;border-radius:99px;transition:all .4s;pointer-events:none;text-align:center;max-width:90vw}
+  #toast.zeig{opacity:1;transform:translate(-50%,0)}
+  #countdown{position:fixed;inset:0;display:grid;place-items:center;font-size:160px;font-weight:900;z-index:21;pointer-events:none;color:var(--gelb);text-shadow:0 0 40px rgba(255,213,74,.7)}
+  #abzeichen{display:flex;gap:6px;font-size:22px}
+</style>
+</head>
+<body>
+<canvas id="all"></canvas>
+
+<div class="hud">
+  <div class="pill" id="pilot">🛸 <span id="pname">Pilot</span></div>
+  <div class="rechts">
+    <div class="pill" id="staub">✨ <b id="zahl">0</b> <small>Sternenstaub</small></div>
+    <button class="knopf" id="ton" aria-label="Ton an/aus">🔊</button>
+  </div>
+</div>
+<div id="tipp">👆 Wisch durchs Weltall · Tipp auf einen Planeten</div>
+<div id="toast"></div>
+<div id="countdown"></div>
+
+<div id="fenster" aria-live="polite"><div class="blatt">
+  <div class="kopf"><div class="gross" id="fE"></div><div><h2 id="fT"></h2><p id="fI"></p></div>
+    <button class="knopf zu" id="zu" aria-label="Schließen">✕</button></div>
+  <div class="stationen" id="fS"></div>
+</div></div>
+
+<div id="start"><div class="karte">
+  <div class="ufo">🛸</div>
+  <h1 id="sT">Willkommen an Bord!</h1>
+  <p id="sP">Du bist jetzt Pilot im Sternenstaub-Universum.<br>Wie heißt du?</p>
+  <input id="sName" maxlength="16" placeholder="Dein Name" autocomplete="off">
+  <p style="margin-top:16px">Welche Farbe hat dein UFO?</p>
+  <div class="farben" id="sF"></div>
+  <button class="los" id="sLos">🚀 Abflug!</button>
+</div></div>
+
+<script>
+"use strict";
+/* ---------- Daten ---------- */
+const G = "https://stillerevolution.github.io/";
+const PLANETEN = [
+  {id:"schloss", n:"Schloss-Planet", e:"🏰", x:620, y:520, r:92, a:"#ff8fb8", b:"#7a2a63", ring:true,
+   i:"Hier wohnen Geschichten. Lies selbst oder lass dir vorlesen.",
+   s:[{e:"🏰",t:"Die 4 Schloss-Geschichten",i:"Auch auf Vietnamesisch – Tiếng Việt.",u:G+"Geschichten-f-r-Kinder-1/"},
+      {e:"🦉",t:"Bronko, Opossum & Eule",i:"Was mein Körper fühlt – zum Zusammenlesen.",u:G+"Projekt-Sternenstaub_Leas_Spiegelwelten/"}]},
+  {id:"kompass", n:"Kompass-Mond", e:"🧭", x:1180, y:300, r:62, a:"#9ad7ff", b:"#2b4f8a",
+   i:"Ein stiller Mond. Hier lernst du, auf dich zu hören.",
+   s:[{e:"🧭",t:"Dein innerer Kompass",i:"Wachhund, Eule, Kuscheldecke & Eichenbaum – mit Hörreise.",u:G+"Dein-innerer-Kompass-ab-7-Jahre-bis-zum-Finale/"},
+      {e:"🌬️",t:"Durchatmen",i:"Atem-Übungen, wenn alles zu viel ist.",u:"seiten/kinder-kompass.html"}]},
+  {id:"detektiv", n:"Detektiv-Planet", e:"🔍", x:1700, y:640, r:84, a:"#5ef0c0", b:"#145c55",
+   i:"Geheime Missionen! Finde heraus, wo Sachen hingehören.",
+   s:[{e:"🔋",t:"Batterie-Detektive",i:"Wohin mit alten Batterien?",u:"seiten/batterie-detektive.html"},
+      {e:"🍂",t:"Biotonnen-Detektive",i:"Was darf in die Biotonne – und was wird daraus?",u:"seiten/biotonnen-detektive.html"}]},
+  {id:"zucker", n:"Zuckerwatte-Planet", e:"🍭", x:980, y:960, r:72, a:"#ffb3e6", b:"#8a3f8a", ring:true,
+   i:"Süß – aber Vorsicht! Was macht Zucker mit dir?",
+   s:[{e:"🍭",t:"Die Zucker-Falle",i:"Ein Abenteuer mit Rate-Spiel.",u:"seiten/zucker-falle.html"}]},
+  {id:"koerper", n:"Herz-Planet", e:"🫀", x:380, y:1080, r:70, a:"#ff7b7b", b:"#7a1e2e",
+   i:"Dein Körper ist ein Wunderwerk. Hier verstehst du ihn.",
+   s:[{e:"🫀",t:"Mein Körper verstehen",i:"Was passiert in mir, wenn ich wütend oder müde bin?",u:G+"Dein-K-rper-ist-keine-M-llhalde/"}]},
+  {id:"drache", n:"Drachen-Nebel", e:"🐉", x:1560, y:1200, r:66, a:"#ffcf6b", b:"#8a4b12",
+   i:"Im Nebel leben zwölf Tiere. Welches bist du?",
+   s:[{e:"🐉",t:"Die zwölf Tierzeichen",i:"Ratte, Drache, Tiger … woher kommen sie?",u:"seiten/tierzeichen.html"}]},
+  {id:"klang", n:"Klang-Planet", e:"🎵", x:2060, y:300, r:64, a:"#b48cff", b:"#3c2380", ring:true,
+   i:"Hier summt das ganze Weltall. Zum Runterkommen.",
+   s:[{e:"🎵",t:"Musik zum Runterkommen",i:"Sechzehn ruhige Lieder.",u:G+"Lebendigkeit-Monolith/"}]},
+  {id:"logbuch", n:"Logbuch-Station", e:"📔", x:220, y:240, r:54, a:"#d9e3ff", b:"#46557f", station:true,
+   i:"Jeder Pilot führt ein Logbuch. Schreib auf, was heute los war.",
+   s:[{e:"📔",t:"Mein Tagebuch",i:"Bleibt nur auf diesem Tablet.",u:G+"kinder-tagebuch-app/"}]},
+  {id:"level", n:"Level-Up-Station", e:"🎮", x:2140, y:960, r:56, a:"#7cc4ff", b:"#1d4a7a", station:true,
+   i:"Trainingslager für die Schule – für große Piloten.",
+   s:[{e:"🎮",t:"Level Up Your Life",i:"Tipps für die Schule.",u:"seiten/level-up.html"}]},
+  {id:"papa", n:"Papas Planet", e:"✨", x:1260, y:1480, r:60, a:"#fff6c9", b:"#8a7a2a", zu:true,
+   i:"Dieser Planet ist noch im Bau. Bald landet hier Papas App!", s:[]}
+];
+const WELT = {w:2400, h:1700};
+const UFO_FARBEN = ["#5ef0c0","#ff8fb8","#ffd54a","#7cc4ff","#b48cff"];
+const ABZEICHEN = [
+  {n:3,  e:"🥉", t:"Weltraum-Neuling"},
+  {n:6,  e:"🥈", t:"Sternen-Entdecker"},
+  {n:9,  e:"🥇", t:"Meister-Pilot"}];
+
+/* ---------- Speicher (nur lokal) ---------- */
+const KEY = "sternenstaub-reise-v1";
+let S = {name:"", farbe:UFO_FARBEN[0], staub:0, planeten:{}, stationen:{}, ton:true, ufo:null};
+try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch(e) {}
+const merken = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
+
+/* ---------- Töne (Web Audio, ohne Dateien) ---------- */
+let AC = null;
+function ac(){ if(!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(AC && AC.state==="suspended") AC.resume(); return AC; }
+function ton(f1, f2, dauer, typ="sine", laut=.12, wann=0){
+  if(!S.ton) return; const a=ac(); if(!a) return;
+  const t=a.currentTime+wann, o=a.createOscillator(), g=a.createGain();
+  o.type=typ; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+dauer);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(laut,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+dauer);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t+dauer+.05);
+}
+function rauschen(dauer, von, bis, laut=.09){
+  if(!S.ton) return; const a=ac(); if(!a) return;
+  const n=a.sampleRate*dauer, buf=a.createBuffer(1,n,a.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(), t=a.currentTime;
+  src.buffer=buf; f.type="bandpass"; f.Q.value=1.2;
+  f.frequency.setValueAtTime(von,t); f.frequency.exponentialRampToValueAtTime(bis,t+dauer);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(laut,t+dauer*.3); g.gain.linearRampToValueAtTime(0,t+dauer);
+  src.connect(f).connect(g).connect(a.destination); src.start(t);
+}
+const klang = {
+  flug(){ rauschen(.9, 300, 1800); },
+  ding(){ ton(880,1320,.25,"sine",.14); ton(1320,1760,.3,"sine",.1,.12); },
+  beam(){ ton(220,880,.6,"triangle",.07); },
+  tipp(){ ton(660,700,.08,"sine",.08); },
+  fanfare(){ [523,659,784,1047].forEach((f,i)=>ton(f,f,.35,"triangle",.12,i*.13)); }
+};
+
+/* ---------- Canvas & Kamera ---------- */
+const cv = document.getElementById("all"), cx = cv.getContext("2d");
+let BW=0, BH=0, DPR=1;
+function groesse(){ DPR=Math.min(2, window.devicePixelRatio||1); BW=innerWidth; BH=innerHeight; cv.width=BW*DPR; cv.height=BH*DPR; cx.setTransform(DPR,0,0,DPR,0,0); }
+addEventListener("resize", groesse); groesse();
+
+const start = PLANETEN[0];
+const ufo = S.ufo ? {...S.ufo} : {x:start.x-140, y:start.y-160};
+ufo.zx=ufo.x; ufo.zy=ufo.y; ufo.flug=null; ufo.beam=0;
+const kam = {x:ufo.x, y:ufo.y, zx:ufo.x, zy:ufo.y, folgen:true};
+const reduziert = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* Sterne in drei Schichten (Parallaxe) */
+const zufall = (a,b)=>a+Math.random()*(b-a);
+const SCHICHTEN = [0.25,0.5,0.8].map((tiefe,k)=>({tiefe, sterne:Array.from({length:[260,160,90][k]},()=>({x:zufall(-400,WELT.w+400),y:zufall(-400,WELT.h+400),r:zufall(.4,[1,1.5,2.2][k]),p:Math.random()*6.28}))}));
+const NEBEL = [{x:500,y:300,r:520,c:"rgba(120,60,200,"},{x:1700,y:400,r:600,c:"rgba(40,90,200,"},{x:1200,y:1300,r:640,c:"rgba(200,60,140,"},{x:2100,y:1200,r:480,c:"rgba(30,160,170,"}];
+const funken = [];      // Glitzer-Partikel
+const schnuppen = [];   // Sternschnuppen (fangbar)
+
+/* ---------- Zeichnen ---------- */
+function welt2bild(x,y,tiefe=1){ return [ (x-kam.x)*tiefe + BW/2, (y-kam.y)*tiefe + BH/2 ]; }
+function bild2welt(px,py){ return [ px - BW/2 + kam.x, py - BH/2 + kam.y ]; }
+
+function planetMalen(p, t){
+  const [x,y] = welt2bild(p.x,p.y);
+  if(x<-p.r*3||x>BW+p.r*3||y<-p.r*3||y>BH+p.r*3) return;
+  const besucht = !!S.planeten[p.id];
+  // Leuchten (unbesuchte pulsieren)
+  const puls = besucht ? .25 : .35+.2*Math.sin(t/500+p.x);
+  const gl = cx.createRadialGradient(x,y,p.r*.6,x,y,p.r*2.1);
+  gl.addColorStop(0, p.a+"66"); gl.addColorStop(1, "transparent");
+  cx.globalAlpha = puls*1.6; cx.fillStyle=gl; cx.beginPath(); cx.arc(x,y,p.r*2.1,0,7); cx.fill(); cx.globalAlpha=1;
+  // Ring hinten
+  if(p.ring){ cx.save(); cx.translate(x,y); cx.rotate(-.35); cx.strokeStyle=p.a+"aa"; cx.lineWidth=7; cx.beginPath(); cx.ellipse(0,0,p.r*1.65,p.r*.42,0,Math.PI,2*Math.PI); cx.stroke(); cx.restore(); }
+  if(p.station){ // Raumstation: Ring mit Speichen
+    cx.save(); cx.translate(x,y); cx.rotate(t/4000);
+    cx.strokeStyle=p.a; cx.lineWidth=8; cx.beginPath(); cx.arc(0,0,p.r,0,7); cx.stroke();
+    cx.lineWidth=4; for(let k=0;k<4;k++){ cx.rotate(Math.PI/2); cx.beginPath(); cx.moveTo(0,0); cx.lineTo(p.r,0); cx.stroke(); }
+    cx.fillStyle=p.b; cx.beginPath(); cx.arc(0,0,p.r*.42,0,7); cx.fill(); cx.strokeStyle=p.a; cx.stroke();
+    cx.restore();
+  } else {
+    const k = cx.createRadialGradient(x-p.r*.4,y-p.r*.45,p.r*.1,x,y,p.r);
+    k.addColorStop(0,"#ffffff"); k.addColorStop(.18,p.a); k.addColorStop(1,p.b);
+    cx.fillStyle=k; cx.beginPath(); cx.arc(x,y,p.r,0,7); cx.fill();
+    // Streifen/Krater für Tiefe
+    cx.save(); cx.beginPath(); cx.arc(x,y,p.r,0,7); cx.clip();
+    cx.globalAlpha=.18; cx.fillStyle="#fff";
+    for(let s=0;s<3;s++){ cx.beginPath(); cx.ellipse(x+Math.sin(t/3000+s*2+p.y)*p.r*.3, y-p.r*.5+s*p.r*.45, p.r*1.2, p.r*.08, 0,0,7); cx.fill(); }
+    cx.globalAlpha=.25; cx.fillStyle="#000"; cx.beginPath(); cx.arc(x+p.r*.35,y+p.r*.3,p.r*.95,0,7); cx.fill();
+    cx.restore(); cx.globalAlpha=1;
+  }
+  if(p.ring){ cx.save(); cx.translate(x,y); cx.rotate(-.35); cx.strokeStyle=p.a; cx.lineWidth=7; cx.beginPath(); cx.ellipse(0,0,p.r*1.65,p.r*.42,0,0,Math.PI); cx.stroke(); cx.restore(); }
+  // Emoji & Name
+  cx.font = `${Math.round(p.r*.75)}px system-ui, "Noto Color Emoji", sans-serif`; cx.textAlign="center"; cx.textBaseline="middle";
+  cx.globalAlpha = p.zu ? .55 : 1; cx.fillText(p.zu?"🔒":p.e, x, y+2); cx.globalAlpha=1;
+  cx.font = "700 17px system-ui, sans-serif"; cx.fillStyle = "#f3f5ff";
+  cx.shadowColor="#000"; cx.shadowBlur=8; cx.fillText(p.n, x, y+p.r+(p.ring?30:24)); cx.shadowBlur=0;
+  if(besucht){ cx.font="20px system-ui"; cx.fillText("🚩", x+p.r*.8, y-p.r*.8); }
+}
+
+function ufoMalen(t){
+  const [x,y] = welt2bild(ufo.x, ufo.y);
+  const wackeln = reduziert ? 0 : Math.sin(t/380)*5;
+  const neig = ufo.flug ? Math.max(-.35,Math.min(.35,(ufo.zx-ufo.x)/400)) : Math.sin(t/900)*.05;
+  // Beam
+  if(ufo.beam>0){
+    const h=150*ufo.beam; const g=cx.createLinearGradient(x,y,x,y+h);
+    g.addColorStop(0,S.farbe+"cc"); g.addColorStop(1,S.farbe+"00");
+    cx.fillStyle=g; cx.beginPath(); cx.moveTo(x-16,y+14); cx.lineTo(x+16,y+14); cx.lineTo(x+60,y+h); cx.lineTo(x-60,y+h); cx.closePath(); cx.fill();
+  }
+  cx.save(); cx.translate(x, y+wackeln); cx.rotate(neig);
+  // Kuppel
+  const k=cx.createRadialGradient(-6,-20,2,0,-12,26); k.addColorStop(0,"#ffffff"); k.addColorStop(1,"#9fd8ff88");
+  cx.fillStyle=k; cx.beginPath(); cx.ellipse(0,-10,22,20,0,Math.PI,2*Math.PI); cx.fill();
+  // Körper
+  const b=cx.createLinearGradient(0,-10,0,16); b.addColorStop(0,"#ffffff"); b.addColorStop(.35,S.farbe); b.addColorStop(1,"#1b2350");
+  cx.fillStyle=b; cx.beginPath(); cx.ellipse(0,0,48,15,0,0,7); cx.fill();
+  // Lichter
+  for(let i=-2;i<=2;i++){ const an = Math.floor(t/180)%5===(i+2); cx.fillStyle = an ? "#fff6a0" : "#ffd54a"; cx.beginPath(); cx.arc(i*17,3,an?5:3.5,0,7); cx.fill(); }
+  cx.restore();
+  // Name
+  if(S.name){ cx.font="700 14px system-ui"; cx.fillStyle="#f3f5ffcc"; cx.textAlign="center"; cx.fillText(S.name, x, y-44+wackeln); }
+}
+
+function malen(t){
+  // Hintergrund
+  const hg=cx.createLinearGradient(0,0,0,BH); hg.addColorStop(0,"#0a1030"); hg.addColorStop(1,"#05081a");
+  cx.fillStyle=hg; cx.fillRect(0,0,BW,BH);
+  for(const n of NEBEL){ const [x,y]=welt2bild(n.x,n.y,.4); const g=cx.createRadialGradient(x,y,0,x,y,n.r); g.addColorStop(0,n.c+".22)"); g.addColorStop(1,n.c+"0)"); cx.fillStyle=g; cx.fillRect(x-n.r,y-n.r,n.r*2,n.r*2); }
+  for(const L of SCHICHTEN){ cx.fillStyle="#fff"; for(const s of L.sterne){ const [x,y]=welt2bild(s.x,s.y,L.tiefe); if(x<-5||x>BW+5||y<-5||y>BH+5) continue; cx.globalAlpha=.45+.55*Math.abs(Math.sin(t/1200+s.p)); cx.beginPath(); cx.arc(x,y,s.r,0,7); cx.fill(); } }
+  cx.globalAlpha=1;
+  // Flugspur
+  if(warp>0){ cx.strokeStyle="rgba(255,255,255,.7)"; cx.lineWidth=2; for(const L of SCHICHTEN) for(let i=0;i<L.sterne.length;i+=3){ const s=L.sterne[i]; const [x,y]=welt2bild(s.x,s.y,L.tiefe); const dx=x-BW/2, dy=y-BH/2; cx.globalAlpha=warp*.8; cx.beginPath(); cx.moveTo(x,y); cx.lineTo(x+dx*warp*.5,y+dy*warp*.5); cx.stroke(); } cx.globalAlpha=1; }
+  // Sternschnuppen
+  for(const s of schnuppen){ const [x,y]=welt2bild(s.x,s.y); const g=cx.createLinearGradient(x,y,x-s.vx*14,y-s.vy*14); g.addColorStop(0,"#fff"); g.addColorStop(1,"rgba(255,255,255,0)"); cx.strokeStyle=g; cx.lineWidth=3; cx.beginPath(); cx.moveTo(x,y); cx.lineTo(x-s.vx*14,y-s.vy*14); cx.stroke(); cx.fillStyle="#fff8c8"; cx.beginPath(); cx.arc(x,y,4,0,7); cx.fill(); }
+  for(const p of PLANETEN) planetMalen(p,t);
+  ufoMalen(t);
+  for(const f of funken){ const [x,y]=welt2bild(f.x,f.y); cx.globalAlpha=Math.max(0,f.l); cx.fillStyle=f.c; cx.font=`${f.s}px system-ui`; cx.fillText("✦",x,y); }
+  cx.globalAlpha=1;
+  miniKarte();
+}
+
+function miniKarte(){
+  const w=Math.min(190,BW*.22), h=w*WELT.h/WELT.w, x0=BW-w-14, y0=BH-h-14, f=w/WELT.w;
+  cx.fillStyle="rgba(10,16,48,.7)"; cx.strokeStyle="rgba(160,180,255,.35)"; cx.lineWidth=1;
+  cx.beginPath(); cx.roundRect ? cx.roundRect(x0,y0,w,h,12) : cx.rect(x0,y0,w,h); cx.fill(); cx.stroke();
+  for(const p of PLANETEN){ cx.fillStyle = S.planeten[p.id] ? p.a : "rgba(255,255,255,.5)"; cx.beginPath(); cx.arc(x0+p.x*f, y0+p.y*f, Math.max(3,p.r*f), 0, 7); cx.fill(); }
+  cx.strokeStyle="rgba(255,255,255,.6)"; cx.strokeRect(x0+(kam.x-BW/2)*f, y0+(kam.y-BH/2)*f, BW*f, BH*f);
+  cx.fillStyle=S.farbe; cx.beginPath(); cx.arc(x0+ufo.x*f, y0+ufo.y*f, 4, 0, 7); cx.fill();
+  miniKarte.box={x0,y0,w,h,f};
+}
+
+/* ---------- Bewegung ---------- */
+let warp=0, letzte=0, gelandet=null;
+function schritt(t){
+  const dt=Math.min(50,t-(letzte||t)); letzte=t;
+  // UFO-Flug (weiche Kurve)
+  if(ufo.flug){
+    const F=ufo.flug; F.k=Math.min(1,F.k+dt/F.dauer);
+    const e=F.k<.5 ? 4*F.k*F.k*F.k : 1-Math.pow(-2*F.k+2,3)/2;
+    const mx=(F.x0+F.x1)/2, my=Math.min(F.y0,F.y1)-160;
+    ufo.x=(1-e)*(1-e)*F.x0+2*(1-e)*e*mx+e*e*F.x1; ufo.y=(1-e)*(1-e)*F.y0+2*(1-e)*e*my+e*e*F.y1;
+    if(Math.random()<.5) funken.push({x:ufo.x+zufall(-20,20),y:ufo.y+12,l:1,s:zufall(8,14),c:S.farbe});
+    if(F.k>=1){ ufo.flug=null; F.fertig && F.fertig(); }
+  }
+  if(ufo.beam>0 && !ufo.beamAn) ufo.beam=Math.max(0,ufo.beam-dt/400);
+  if(ufo.beamAn) ufo.beam=Math.min(1,ufo.beam+dt/350);
+  // Kamera
+  if(kam.folgen){ kam.zx=ufo.x; kam.zy=ufo.y+60;
+    if(gelandet && fenster.classList.contains("auf")){ kam.zx=gelandet.x; kam.zy=gelandet.y+BH*.2; } }
+  kam.zx=Math.max(BW/2-300,Math.min(WELT.w-BW/2+300,kam.zx)); kam.zy=Math.max(BH/2-300,Math.min(WELT.h-BH/2+300,kam.zy));
+  kam.x+=(kam.zx-kam.x)*Math.min(1,dt/180); kam.y+=(kam.zy-kam.y)*Math.min(1,dt/180);
+  // Funken & Schnuppen
+  for(let i=funken.length-1;i>=0;i--){ const f=funken[i]; f.l-=dt/700; f.y+=dt*.02; if(f.l<=0) funken.splice(i,1); }
+  if(!reduziert && schnuppen.length<1 && Math.random()<dt/9000){ const [wx,wy]=bild2welt(zufall(0,BW),zufall(0,BH*.4)); schnuppen.push({x:wx,y:wy,vx:zufall(3,6)*(Math.random()<.5?-1:1),vy:zufall(1.5,3),l:2200}); }
+  for(let i=schnuppen.length-1;i>=0;i--){ const s=schnuppen[i]; s.x+=s.vx*dt/16; s.y+=s.vy*dt/16; s.l-=dt; if(s.l<=0) schnuppen.splice(i,1); }
+  if(warp>0) warp=Math.max(0,warp-dt/1400);
+  malen(t);
+  requestAnimationFrame(schritt);
+}
+
+function fliegeZu(p){
+  schliessen(true); gelandet=null;
+  const zx=p.x, zy=p.y-p.r-70;
+  const dist=Math.hypot(zx-ufo.x, zy-ufo.y);
+  if(dist<20){ landen(p); return; }
+  kam.folgen=true; klang.flug();
+  ufo.zx=zx; ufo.zy=zy;
+  ufo.flug={x0:ufo.x,y0:ufo.y,x1:zx,y1:zy,k:0,dauer:reduziert?300:Math.max(700,Math.min(1900,dist*1.4)),fertig:()=>landen(p)};
+  tippWeg();
+}
+function landen(p){
+  gelandet=p;
+  S.ufo={x:ufo.x,y:ufo.y}; merken();
+  ufo.beamAn=true; klang.beam();
+  setTimeout(()=>{ ufo.beamAn=false;
+    if(!S.planeten[p.id] && !p.zu){ S.planeten[p.id]=true; staubDazu(3, p); pruefeAbzeichen(); }
+    oeffnen(p);
+  }, 520);
+}
+
+/* ---------- Sternenstaub & Abzeichen ---------- */
+function staubDazu(n, wo){
+  S.staub+=n; merken(); document.getElementById("zahl").textContent=S.staub;
+  const el=document.getElementById("staub"); el.classList.remove("plopp"); void el.offsetWidth; el.classList.add("plopp");
+  klang.ding();
+  if(wo) for(let i=0;i<24;i++) funken.push({x:wo.x+zufall(-wo.r,wo.r),y:wo.y+zufall(-wo.r,wo.r),l:zufall(.8,1.4),s:zufall(12,22),c:"#ffd54a"});
+  toast(`+${n} ✨ Sternenstaub!`);
+}
+function pruefeAbzeichen(){
+  const n=Object.keys(S.planeten).length;
+  for(const a of ABZEICHEN) if(n===a.n){ setTimeout(()=>{ klang.fanfare(); toast(`${a.e} Abzeichen: ${a.t}!`, 3200); },900); }
+  abzeichenZeigen();
+}
+function abzeichenZeigen(){
+  const n=Object.keys(S.planeten).length; const hab=ABZEICHEN.filter(a=>n>=a.n).map(a=>a.e).join("");
+  document.getElementById("pname").innerHTML = (S.name||"Pilot") + (hab?` <span style="margin-left:4px">${hab}</span>`:"");
+}
+let toastT=0;
+function toast(t, ms=1800){ const el=document.getElementById("toast"); el.textContent=t; el.classList.add("zeig"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("zeig"), ms); }
+
+/* ---------- Planeten-Fenster ---------- */
+const fenster=document.getElementById("fenster");
+function oeffnen(p){
+  document.getElementById("fE").textContent=p.zu?"🔒":p.e;
+  document.getElementById("fT").textContent=p.n;
+  document.getElementById("fI").textContent=p.i;
+  const box=document.getElementById("fS"); box.innerHTML="";
+  if(p.zu){ box.innerHTML='<div class="station" style="cursor:default"><div class="e">🚧</div><div><b>Baustelle</b><span>Komm bald wieder vorbei!</span></div></div>'; }
+  for(const s of p.s){
+    const b=document.createElement("button"); b.className="station";
+    const da=!!S.stationen[s.u];
+    b.innerHTML=`<div class="e">${s.e}</div><div><b></b><span></span></div><div class="haken">${da?"✅":"🚀"}</div>`;
+    b.querySelector("b").textContent=s.t; b.querySelector("span").textContent=s.i;
+    b.onclick=()=>{ klang.tipp(); if(!S.stationen[s.u]){ S.stationen[s.u]=true; S.staub+=1; } S.ufo={x:ufo.x,y:ufo.y}; merken(); setTimeout(()=>{ location.href=s.u; },160); };
+    box.appendChild(b);
+  }
+  fenster.classList.add("auf");
+}
+function schliessen(still){ fenster.classList.remove("auf"); if(!still) klang.tipp(); }
+document.getElementById("zu").onclick=()=>schliessen();
+
+/* ---------- Bedienung: wischen & tippen ---------- */
+let zug=null;
+cv.addEventListener("pointerdown", e=>{ ac(); zug={x:e.clientX,y:e.clientY,kx:kam.x,ky:kam.y,weit:0}; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener("pointermove", e=>{ if(!zug) return; const dx=e.clientX-zug.x, dy=e.clientY-zug.y; zug.weit=Math.max(zug.weit,Math.hypot(dx,dy)); if(zug.weit>8){ kam.folgen=false; kam.zx=zug.kx-dx; kam.zy=zug.ky-dy; kam.x=kam.zx; kam.y=kam.zy; tippWeg(); } });
+cv.addEventListener("pointerup", e=>{ if(!zug) return; const kurz=zug.weit<=8; zug=null; if(kurz) tippen(e.clientX,e.clientY); });
+function tippen(px,py){
+  // Minikarte
+  const m=miniKarte.box; if(m && px>=m.x0 && px<=m.x0+m.w && py>=m.y0 && py<=m.y0+m.h){ const wx=(px-m.x0)/m.f, wy=(py-m.y0)/m.f; let best=null,bd=1e9; for(const p of PLANETEN){ const d=Math.hypot(p.x-wx,p.y-wy); if(d<bd){bd=d;best=p;} } if(best) fliegeZu(best); return; }
+  const [wx,wy]=bild2welt(px,py);
+  // Sternschnuppe fangen
+  for(let i=0;i<schnuppen.length;i++){ const s=schnuppen[i]; if(Math.hypot(s.x-wx,s.y-wy)<60){ schnuppen.splice(i,1); staubDazu(5,{x:s.x,y:s.y,r:30}); toast("🌠 Sternschnuppe gefangen! +5 ✨"); return; } }
+  for(const p of PLANETEN){ if(Math.hypot(p.x-wx,p.y-wy)<p.r*1.25){ klang.tipp(); fliegeZu(p); return; } }
+  if(fenster.classList.contains("auf")) schliessen();
+}
+let tippZeit=setTimeout(tippWeg, 9000);
+function tippWeg(){ document.getElementById("tipp").style.opacity=0; }
+
+/* ---------- Ton-Knopf ---------- */
+const tonK=document.getElementById("ton");
+const tonZeigen=()=>tonK.textContent=S.ton?"🔊":"🔇";
+tonK.onclick=()=>{ S.ton=!S.ton; merken(); tonZeigen(); if(S.ton){ ac(); klang.tipp(); } }; tonZeigen();
+
+/* ---------- Start ---------- */
+document.getElementById("zahl").textContent=S.staub; abzeichenZeigen();
+const sF=document.getElementById("sF");
+UFO_FARBEN.forEach(f=>{ const d=document.createElement("div"); d.className="farbe"+(f===S.farbe?" an":""); d.style.background=f; d.onclick=()=>{ S.farbe=f; [...sF.children].forEach(c=>c.classList.toggle("an",c===d)); ac(); klang.tipp(); }; sF.appendChild(d); });
+const sName=document.getElementById("sName"); sName.value=S.name||"";
+if(S.name){ document.getElementById("sT").textContent=`Willkommen zurück, ${S.name}!`; document.getElementById("sP").innerHTML="Dein UFO ist startklar.<br>Name oder Farbe ändern? Einfach hier."; }
+document.getElementById("sLos").onclick=()=>{
+  try{ sessionStorage.setItem("an-bord","1"); }catch(e){}
+  ac(); S.name=(sName.value||"").trim().slice(0,16)||"Pilot"; merken(); abzeichenZeigen();
+  document.getElementById("start").classList.add("weg"); sName.blur();
+  const cd=document.getElementById("countdown");
+  if(reduziert){ cd.remove(); return; }
+  let n=3; const zaehl=()=>{ if(n>0){ cd.textContent=n; ton(440,440,.15,"square",.06); n--; setTimeout(zaehl,520); } else { cd.textContent="🚀"; klang.flug(); warp=1; ton(200,1200,.9,"sawtooth",.05); setTimeout(()=>{ cd.textContent=""; toast(`Los geht's, ${S.name}! 🛸`, 2200); },600); } };
+  zaehl();
+};
+// Zurück von einer Station: direkt im Weltall weiter, ohne Startbildschirm
+let anBord=false; try{ anBord=sessionStorage.getItem("an-bord")==="1"; }catch(e){}
+if(anBord){ document.getElementById("start").remove(); document.getElementById("countdown").textContent=""; tippWeg(); toast(`Willkommen zurück, ${S.name||"Pilot"}! ✨`); }
+// Piloten-Schild antippen: Name & Farbe ändern
+document.getElementById("pilot").onclick=()=>{ klang.tipp(); let st=document.getElementById("start"); if(st){ st.classList.remove("weg"); return; } try{ sessionStorage.removeItem("an-bord"); }catch(e){} location.reload(); };
+sName.addEventListener("keydown", e=>{ if(e.key==="Enter") document.getElementById("sLos").click(); });
+requestAnimationFrame(schritt);
+</script>
+</body>
+</html>

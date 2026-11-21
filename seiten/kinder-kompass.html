@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kinder-Kompass — Somatische Selbstregulation & Autonomie (2026)</title>
+  <meta name="title" content="Kinder-Kompass — Somatische Selbstregulation & Autonomie (2026)" />
+  <meta name="description" content="Evidenzbasiertes PWA-Hub für neurobiologische Entlastung, Inaction Progress und prozedurale Aufmerksamkeits-Steuerung." />
+  <meta name="author" content="Kinder-Kompass Architecture" />
+  <meta name="theme-color" content="#060714" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Kinder-Kompass — Somatische Selbstregulation & Autonomie" />
+  <meta property="og:description" content="Fünf gekoppelte, prozedurale Ruhe-Prozesse: Atem-Taktgeber, Raum-Synthese, Garten, Labyrinth des Innehaltens und Entwicklungs-Kompass." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            void: '#060714',
+            nebula: '#10152b',
+            gold: '#d9a35c',
+            parchment: '#f4ead9',
+          },
+          fontFamily: {
+            serif: ['Fraunces', 'serif'],
+            sans: ['Atkinson Hyperlegible', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23d9a35c' d='M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z'/%3E%3C/svg%3E" />
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Kinder-Kompass%22%2C%22short_name%22%3A%22Kompass%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23060714%22%2C%22theme_color%22%3A%22%23060714%22%7D" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Kinder-Kompass PWA",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0" }
+  }
+  </script>
+  <style>
+    :root{
+      --void:#060714; --nebula:#10152b; --gold:#d9a35c; --parchment:#f4ead9;
+      --amber-glow: rgba(217,163,92,.55);
+      --moss:#7c9473; --water:#5f7f97; --stone:#9a9186; --bloom:#e8b4bc; --path-tone:#d8c9a3;
+    }
+    html{scroll-behavior:smooth;}
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto;}
+      *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important;}
+    }
+    body{background:radial-gradient(ellipse 90% 60% at 50% -10%, var(--nebula) 0%, var(--void) 62%);}
+    .glass{background:rgba(16,21,43,.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(244,234,217,.1);}
+    .glow-hover{transition:box-shadow .25s ease, transform .25s ease, border-color .25s ease;}
+    .glow-hover:hover, .glow-hover:focus-visible{box-shadow:0 0 0 1px var(--gold), 0 0 28px var(--amber-glow); transform:translateY(-2px);}
+    :focus-visible{outline:2px solid var(--gold); outline-offset:3px; border-radius:6px;}
+    #bg-particles{position:fixed; inset:0; z-index:0; pointer-events:none;}
+    dialog.kk-modal{background:transparent; border:none; padding:0; max-width:min(720px,92vw); max-height:88vh; margin:auto; color:inherit;}
+    dialog.kk-modal::backdrop{background:rgba(6,7,20,.75); backdrop-filter:blur(4px);}
+    dialog.kk-modal[open]{animation:kk-pop .28s cubic-bezier(.2,.8,.2,1);}
+    @keyframes kk-pop{from{opacity:0; transform:scale(.96) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);}}
+    .kk-scroll{overflow-y:auto;}
+    .kk-scroll::-webkit-scrollbar{width:8px;}
+    .kk-scroll::-webkit-scrollbar-thumb{background:rgba(217,163,92,.35); border-radius:8px;}
+    details > summary{cursor:pointer; list-style:none;}
+    details > summary::-webkit-details-marker{display:none;}
+    details[open] > summary .kk-chevron{transform:rotate(90deg);}
+    .kk-chevron{transition:transform .2s ease; display:inline-block;}
+    .kk-tab[aria-selected="true"]{background:var(--gold); color:var(--void);}
+    canvas{display:block; width:100%; height:100%;}
+    @keyframes kk-breathe-hint{0%,100%{opacity:.55;} 50%{opacity:1;}}
+    .kk-live-dot{animation:kk-breathe-hint 3s ease-in-out infinite;}
+  </style>
+</head>
+<body class="bg-void text-parchment font-sans antialiased selection:bg-gold selection:text-void min-h-screen flex flex-col justify-between">
+
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:bg-gold focus:text-void focus:rounded-md focus:font-bold">Zum Hauptinhalt springen</a>
+
+  <canvas id="bg-particles" aria-hidden="true"></canvas>
+
+  <!-- ============================================================ HEADER ============================================================ -->
+  <header class="relative z-20 border-b border-white/10 backdrop-blur-md bg-void/60 sticky top-0">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path fill="#d9a35c" d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+        <div>
+          <p class="font-serif text-xl sm:text-2xl leading-none text-parchment">Kinder-Kompass</p>
+          <p class="text-xs text-parchment/60 mt-0.5">Ruhe, die man üben kann — nicht, die man verordnet</p>
+        </div>
+      </div>
+      <nav aria-label="Hauptnavigation" class="hidden md:flex items-center gap-6 text-sm text-parchment/80">
+        <a class="hover:text-gold transition-colors" href="#atem">Atem</a>
+        <a class="hover:text-gold transition-colors" href="#prozesse">Prozesse</a>
+        <a class="hover:text-gold transition-colors" href="#kompass">Kompass &amp; Tagebuch</a>
+        <a class="hover:text-gold transition-colors" href="#hintergrund">Hintergrund</a>
+      </nav>
+      <button id="btn-exoskeleton" type="button" class="glow-hover text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-full border border-gold/50 text-gold font-semibold whitespace-nowrap">
+        Grenzen &amp; Gegenperspektiven
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="relative z-10 flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6">
+
+    <!-- ============================================================ ATEM / OSZILLATOR ============================================================ -->
+    <section id="atem" aria-labelledby="atem-heading" class="py-14 sm:py-20 grid md:grid-cols-2 gap-10 items-center">
+      <div>
+        <p class="text-gold text-xs tracking-[0.2em] uppercase font-bold mb-3">Somatischer Taktgeber · 0,1 Hz</p>
+        <h1 id="atem-heading" class="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight text-parchment mb-4">Ein Rhythmus, dem der Körper folgen kann.</h1>
+        <p class="text-parchment/75 leading-relaxed mb-6 max-w-prose">
+          Vier Sekunden einatmen, sechs Sekunden ausatmen — ein zehnsekündiger Zyklus, der sich an Resonanzfrequenz-Atmung orientiert.
+          Dieser Takt ist der Motor der gesamten Anwendung: Raum, Garten und Labyrinth reagieren ausschließlich auf das, was hier geschieht, nicht auf Tippgeschwindigkeit oder Wischen.
+        </p>
+        <div class="flex flex-wrap items-center gap-4">
+          <button id="btn-toggle-session" type="button" aria-pressed="false" class="glow-hover px-6 py-3 rounded-full bg-gold text-void font-bold text-sm sm:text-base">
+            Sitzung beginnen
+          </button>
+          <div class="text-sm text-parchment/70">
+            <p>Zyklen: <span id="cycle-count" class="text-gold font-semibold">0</span></p>
+            <p>Ruhe gehalten: <span id="stillness-meter" class="text-gold font-semibold">0 s</span></p>
+          </div>
+        </div>
+        <p id="phase-label" class="sr-only" aria-live="polite">Bereit.</p>
+      </div>
+
+      <div class="flex justify-center">
+        <svg id="pulse-ring" width="280" height="280" viewBox="0 0 280 280" aria-hidden="true" class="max-w-full">
+          <circle cx="140" cy="140" r="120" fill="none" stroke="rgba(244,234,217,.12)" stroke-width="1.5"/>
+          <circle id="ring-glow" cx="140" cy="140" r="70" fill="var(--amber-glow)" opacity="0.35" style="filter:blur(18px);"/>
+          <circle id="ring-core" cx="140" cy="140" r="60" fill="rgba(16,21,43,.7)" stroke="#d9a35c" stroke-width="2"/>
+          <text id="ring-text" x="140" y="146" text-anchor="middle" class="font-serif" font-size="20" fill="#f4ead9">Einatmen</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============================================================ PROZESSE ============================================================ -->
+    <section id="prozesse" aria-labelledby="prozesse-heading" class="py-14 sm:py-20 border-t border-white/10">
+      <p class="text-gold text-xs tracking-[0.2em] uppercase font-bold mb-3">Drei gekoppelte Prozesse</p>
+      <h2 id="prozesse-heading" class="font-serif text-2xl sm:text-3xl text-parchment mb-4">Fortschritt entsteht nicht durch Tempo, sondern durch Halten.</h2>
+      <p class="text-parchment/70 max-w-prose mb-10">Jeder Prozess ist an eine eigene Regel gekoppelt — Einatem-Momente, gehaltene Stille oder bewusstes Verharren. Öffnen kannst du sie jederzeit; wachsen tun sie nur unter ihrer eigenen Bedingung.</p>
+
+      <div class="grid sm:grid-cols-3 gap-6">
+        <article class="glass glow-hover rounded-2xl p-6 flex flex-col gap-4">
+          <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" fill="none" stroke="#d9a35c" stroke-width="1.6"/><rect x="14" y="3" width="7" height="7" fill="none" stroke="#7c9473" stroke-width="1.6"/><rect x="3" y="14" width="7" height="7" fill="none" stroke="#5f7f97" stroke-width="1.6"/><rect x="14" y="14" width="7" height="7" fill="none" stroke="#e8b4bc" stroke-width="1.6"/></svg>
+          <h3 class="font-serif text-xl text-parchment">Raum-Synthese</h3>
+          <p class="text-sm text-parchment/70 flex-1">Eine Landschaft aus Wiese, Wasser, Pfad und Stein setzt sich Zelle für Zelle zusammen — je eine Entscheidung pro Einatemzug.</p>
+          <button data-open-dialog="dlg-wfc" type="button" class="glow-hover self-start px-4 py-2 rounded-full border border-gold/50 text-gold text-sm font-semibold">Öffnen</button>
+        </article>
+
+        <article class="glass glow-hover rounded-2xl p-6 flex flex-col gap-4">
+          <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V10M12 10L7 5M12 10l5-5M12 14L8 10M12 14l4-4" fill="none" stroke="#7c9473" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <h3 class="font-serif text-xl text-parchment">Garten</h3>
+          <p class="text-sm text-parchment/70 flex-1">Ein stochastisches Astwerk verzweigt sich, sobald du für eine gewisse Zeit spürbar still bleibst — kein Wischen, kein Tippen, nur Dableiben.</p>
+          <button data-open-dialog="dlg-lsystem" type="button" class="glow-hover self-start px-4 py-2 rounded-full border border-gold/50 text-gold text-sm font-semibold">Öffnen</button>
+        </article>
+
+        <article class="glass glow-hover rounded-2xl p-6 flex flex-col gap-4">
+          <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h10M3 18h14" stroke="#5f7f97" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <h3 class="font-serif text-xl text-parchment">Labyrinth des Innehaltens</h3>
+          <p class="text-sm text-parchment/70 flex-1">Reihe für Reihe öffnet sich ein Weg — nicht durch schnelles Klicken, sondern durch gezieltes Verharren am Ort.</p>
+          <button data-open-dialog="dlg-maze" type="button" class="glow-hover self-start px-4 py-2 rounded-full border border-gold/50 text-gold text-sm font-semibold">Öffnen</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ KOMPASS & TAGEBUCH ============================================================ -->
+    <section id="kompass" aria-labelledby="kompass-heading" class="py-14 sm:py-20 border-t border-white/10 grid lg:grid-cols-2 gap-10">
+      <div>
+        <p class="text-gold text-xs tracking-[0.2em] uppercase font-bold mb-3">Entwicklungs-Kompass</p>
+        <h2 id="kompass-heading" class="font-serif text-2xl sm:text-3xl text-parchment mb-4">Fragen, geordnet nach Lebensalter — nicht nach Diagnose.</h2>
+        <div role="tablist" aria-label="Altersstufe wählen" class="flex gap-2 mb-6 flex-wrap">
+          <button class="kk-tab" role="tab" aria-selected="true" aria-controls="tier-7-12" id="tab-7-12" data-tier="7-12" type="button">7–12 Jahre</button>
+          <button class="kk-tab" role="tab" aria-selected="false" aria-controls="tier-12-20" id="tab-12-20" data-tier="12-20" type="button">12–20 Jahre</button>
+          <button class="kk-tab" role="tab" aria-selected="false" aria-controls="tier-20plus" id="tab-20plus" data-tier="20plus" type="button">20+ Jahre</button>
+        </div>
+
+        <div id="tier-7-12" role="tabpanel" aria-labelledby="tab-7-12" class="space-y-3">
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Wie fühlt sich mein Körper gerade an?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Wandere in Gedanken von den Zehen bis zum Kopf. Wo ist es warm, wo eng, wo locker?</p>
+              <button class="kk-write" data-prompt="Wie fühlt sich mein Körper gerade an?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Was hilft mir, wenn es zu viel wird?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Es gibt kein einzig richtiges Mittel — nur eines, das gerade zu dir passt: Atmen, Rückzug, Bewegung, Stille.</p>
+              <button class="kk-write" data-prompt="Was hilft mir, wenn es zu viel wird?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Was ist heute gut gelaufen?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Auch kleine Dinge zählen: ein Lachen, ein geschaffter Moment, eine Pause, die gutgetan hat.</p>
+              <button class="kk-write" data-prompt="Was ist heute gut gelaufen?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+        </div>
+
+        <div id="tier-12-20" role="tabpanel" aria-labelledby="tab-12-20" class="space-y-3 hidden">
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Wessen Erwartungen erfülle ich gerade?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Meine eigenen, die von außen — oder eine Mischung, die ich noch nicht ganz durchschaue?</p>
+              <button class="kk-write" data-prompt="Wessen Erwartungen erfülle ich gerade?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Wo brauche ich mehr Raum für mich?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Raum ist nicht nur ein Zimmer. Es kann auch Zeit, ein Thema oder eine Beziehung sein.</p>
+              <button class="kk-write" data-prompt="Wo brauche ich mehr Raum für mich?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Was bedeutet Ruhe, wenn niemand zusieht?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Manche Ruhe ist Vorführung. Diese hier meint die andere Art — die private.</p>
+              <button class="kk-write" data-prompt="Was bedeutet Ruhe, wenn niemand zusieht?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+        </div>
+
+        <div id="tier-20plus" role="tabpanel" aria-labelledby="tab-20plus" class="space-y-3 hidden">
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Welche Muster wiederhole ich, die mir nicht mehr dienen?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Muster halten sich oft, weil sie einmal geschützt haben — nicht, weil sie noch passen.</p>
+              <button class="kk-write" data-prompt="Welche Muster wiederhole ich, die mir nicht mehr dienen?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Wo verwechsle ich Produktivität mit Selbstwert?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Eine ehrliche, oft unbequeme Frage — ohne dass eine bestimmte Antwort erwartet wird.</p>
+              <button class="kk-write" data-prompt="Wo verwechsle ich Produktivität mit Selbstwert?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+          <details class="glass rounded-xl p-4">
+            <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Was, wenn ich mir fünf Minuten Nichtstun erlaube?</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+            <div class="mt-3 space-y-2 text-sm text-parchment/75">
+              <p>Nicht als Belohnung fürs Funktionieren, sondern einfach so.</p>
+              <button class="kk-write" data-prompt="Was, wenn ich mir fünf Minuten Nichtstun erlaube?" type="button">✎ Dazu schreiben</button>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-gold text-xs tracking-[0.2em] uppercase font-bold mb-3">Lokal-Tagebuch</p>
+        <h2 class="font-serif text-2xl sm:text-3xl text-parchment mb-4">Verschlüsselt, bevor es dein Gerät verlässt.</h2>
+        <p class="text-sm text-parchment/70 mb-4 max-w-prose">
+          Einträge werden im Browser mit einem selbstgewählten Passwort verschlüsselt (PBKDF2 + AES-GCM-256) und ausschließlich lokal gespeichert.
+          Niemand — auch diese Anwendung nicht — kann sie ohne dein Passwort lesen. Genau deshalb gibt es auch keine Wiederherstellung, wenn du es vergisst.
+          Jüngere Nutzer:innen bewahren ihr Passwort am besten gemeinsam mit einer Vertrauensperson sicher auf.
+        </p>
+        <button id="btn-new-entry" type="button" class="glow-hover mb-6 px-5 py-2.5 rounded-full bg-gold text-void font-bold text-sm">Neuer Eintrag</button>
+        <div id="storage-notice" class="hidden text-xs text-bloom/90 border border-bloom/30 rounded-lg px-3 py-2 mb-4"></div>
+        <ul id="journal-list" class="space-y-3" aria-label="Gespeicherte Tagebucheinträge"></ul>
+        <p id="journal-empty" class="text-sm text-parchment/50">Noch keine Einträge.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ HINTERGRUND ============================================================ -->
+    <section id="hintergrund" aria-labelledby="hintergrund-heading" class="py-14 sm:py-20 border-t border-white/10">
+      <p class="text-gold text-xs tracking-[0.2em] uppercase font-bold mb-3">Wissenschaftlicher Kontext</p>
+      <h2 id="hintergrund-heading" class="font-serif text-2xl sm:text-3xl text-parchment mb-4">Ein Werkzeug unter vielen — keine Behandlung.</h2>
+      <p class="text-parchment/70 max-w-prose mb-6">Diese Anwendung ersetzt keine Diagnostik, keine Therapie und kein Gespräch mit einer vertrauten Person. Eine ausführliche Einordnung ihrer Grenzen, wissenschaftlicher Gegenargumente und möglicher Weiterentwicklungen findest du im Detail-Fenster.</p>
+      <button data-open-dialog="dlg-exoskeleton" type="button" class="glow-hover px-5 py-2.5 rounded-full border border-gold/50 text-gold text-sm font-semibold">Grenzen &amp; Gegenperspektiven ansehen</button>
+    </section>
+  </main>
+
+  <!-- ============================================================ FOOTER ============================================================ -->
+  <footer class="relative z-10 border-t border-white/10 mt-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 text-xs text-parchment/50 leading-relaxed">
+      <p class="mb-2">Kinder-Kompass ist ein pädagogisch-technisches Übungswerkzeug und keine medizinische oder psychotherapeutische Leistung. Bei anhaltender Belastung: bitte eine Ärztin, einen Therapeuten oder eine andere Vertrauensperson einbeziehen.</p>
+      <p>Alle Daten (Sitzungsstatistik, Tagebuch) verbleiben lokal auf diesem Gerät. Offline-Zwischenspeicherung über den Service Worker sowie die Web-Crypto-Verschlüsselung benötigen einen sicheren Kontext (HTTPS oder localhost) und funktionieren nicht zuverlässig, wenn die Datei direkt per Doppelklick geöffnet wird.</p>
+    </div>
+  </footer>
+
+  <!-- ============================================================ DIALOG: WFC ============================================================ -->
+  <dialog id="dlg-wfc" class="kk-modal" aria-labelledby="dlg-wfc-title">
+    <div class="glass rounded-2xl p-5 sm:p-6 kk-scroll" style="max-height:88vh;">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <h2 id="dlg-wfc-title" class="font-serif text-2xl text-parchment">Raum-Synthese</h2>
+        <button data-close-dialog="dlg-wfc" type="button" aria-label="Schließen" class="glow-hover shrink-0 w-9 h-9 rounded-full border border-gold/40 text-gold">×</button>
+      </div>
+      <p class="text-sm text-parchment/70 mb-4">Jede Einatem-Phase löst genau eine Zellentscheidung aus (Wave Function Collapse, niedrigste Entropie zuerst). Es lässt sich nichts beschleunigen.</p>
+      <div class="rounded-xl overflow-hidden border border-white/10" style="aspect-ratio:5/3;">
+        <canvas id="wfc-canvas" role="img" aria-label="Prozedural erzeugte Landschaft, Zelle für Zelle im Atemtakt entstehend"></canvas>
+      </div>
+      <div class="mt-4 flex items-center justify-between text-xs text-parchment/60">
+        <span id="wfc-status">0 / 0 Zellen gesetzt</span>
+        <button id="btn-wfc-reset" type="button" class="glow-hover px-3 py-1.5 rounded-full border border-gold/40 text-gold">Neue Fläche</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ============================================================ DIALOG: L-SYSTEM ============================================================ -->
+  <dialog id="dlg-lsystem" class="kk-modal" aria-labelledby="dlg-lsystem-title">
+    <div class="glass rounded-2xl p-5 sm:p-6 kk-scroll" style="max-height:88vh;">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <h2 id="dlg-lsystem-title" class="font-serif text-2xl text-parchment">Garten</h2>
+        <button data-close-dialog="dlg-lsystem" type="button" aria-label="Schließen" class="glow-hover shrink-0 w-9 h-9 rounded-full border border-gold/40 text-gold">×</button>
+      </div>
+      <p class="text-sm text-parchment/70 mb-4">Ein stochastisches L-System verzweigt sich weiter, sobald du für mehrere Sekunden am Stück ruhig bleibst — Sitzung muss dafür aktiv sein.</p>
+      <div class="rounded-xl overflow-hidden border border-white/10" style="aspect-ratio:5/4;">
+        <canvas id="lsystem-canvas" role="img" aria-label="Verzweigende Pflanzenstruktur, die bei anhaltender Stille wächst"></canvas>
+      </div>
+      <p id="lsystem-status" class="mt-4 text-xs text-parchment/60">Generation 0 · noch keine gehaltene Stille</p>
+    </div>
+  </dialog>
+
+  <!-- ============================================================ DIALOG: MAZE ============================================================ -->
+  <dialog id="dlg-maze" class="kk-modal" aria-labelledby="dlg-maze-title">
+    <div class="glass rounded-2xl p-5 sm:p-6 kk-scroll" style="max-height:88vh;">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <h2 id="dlg-maze-title" class="font-serif text-2xl text-parchment">Labyrinth des Innehaltens</h2>
+        <button data-close-dialog="dlg-maze" type="button" aria-label="Schließen" class="glow-hover shrink-0 w-9 h-9 rounded-full border border-gold/40 text-gold">×</button>
+      </div>
+      <p class="text-sm text-parchment/70 mb-4">Bewege Maus oder Finger nicht — nach wenigen Sekunden Verharren öffnet sich reihenweise ein neuer Weg (Eller-Algorithmus). Rasche Bewegung pausiert das Wachstum, nimmt aber nichts zurück.</p>
+      <div class="rounded-xl overflow-hidden border border-white/10" style="aspect-ratio:4/5;">
+        <canvas id="maze-canvas" role="img" aria-label="Wachsendes Labyrinth, das sich bei Stillstand öffnet"></canvas>
+      </div>
+      <div class="mt-4 flex items-center justify-between text-xs text-parchment/60">
+        <span id="maze-status">Verharre, um zu beginnen …</span>
+        <button id="btn-maze-reset" type="button" class="glow-hover px-3 py-1.5 rounded-full border border-gold/40 text-gold">Neu beginnen</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ============================================================ DIALOG: JOURNAL ============================================================ -->
+  <dialog id="dlg-journal" class="kk-modal" aria-labelledby="dlg-journal-title">
+    <div class="glass rounded-2xl p-5 sm:p-6 kk-scroll" style="max-height:88vh;">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <h2 id="dlg-journal-title" class="font-serif text-2xl text-parchment">Neuer Eintrag</h2>
+        <button data-close-dialog="dlg-journal" type="button" aria-label="Schließen" class="glow-hover shrink-0 w-9 h-9 rounded-full border border-gold/40 text-gold">×</button>
+      </div>
+      <form id="journal-form" novalidate>
+        <label for="journal-text" class="block text-sm text-parchment/70 mb-1">Text</label>
+        <textarea id="journal-text" data-autofocus rows="6" class="w-full rounded-lg bg-void/60 border border-white/15 p-3 text-parchment mb-4" required></textarea>
+        <label for="journal-pass" class="block text-sm text-parchment/70 mb-1">Passwort (mind. 6 Zeichen, wird nicht gespeichert)</label>
+        <input id="journal-pass" type="password" minlength="6" class="w-full rounded-lg bg-void/60 border border-white/15 p-3 text-parchment mb-2" required />
+        <p id="journal-error" class="text-xs text-bloom mb-3" role="alert"></p>
+        <button type="submit" class="glow-hover px-5 py-2.5 rounded-full bg-gold text-void font-bold text-sm">Verschlüsselt speichern</button>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- ============================================================ DIALOG: DECRYPT ============================================================ -->
+  <dialog id="dlg-decrypt" class="kk-modal" aria-labelledby="dlg-decrypt-title">
+    <div class="glass rounded-2xl p-5 sm:p-6 kk-scroll" style="max-height:88vh;">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <h2 id="dlg-decrypt-title" class="font-serif text-2xl text-parchment">Eintrag anzeigen</h2>
+        <button data-close-dialog="dlg-decrypt" type="button" aria-label="Schließen" class="glow-hover shrink-0 w-9 h-9 rounded-full border border-gold/40 text-gold">×</button>
+      </div>
+      <form id="decrypt-form" novalidate>
+        <label for="decrypt-pass" class="block text-sm text-parchment/70 mb-1">Passwort</label>
+        <input id="decrypt-pass" data-autofocus type="password" class="w-full rounded-lg bg-void/60 border border-white/15 p-3 text-parchment mb-2" required />
+        <p id="decrypt-error" class="text-xs text-bloom mb-3" role="alert"></p>
+        <button type="submit" class="glow-hover px-5 py-2.5 rounded-full bg-gold text-void font-bold text-sm">Entschlüsseln</button>
+      </form>
+      <div id="decrypt-result" class="mt-4 whitespace-pre-wrap text-sm text-parchment/85 hidden"></div>
+    </div>
+  </dialog>
+
+  <!-- ============================================================ DIALOG: EXOSKELETT / ANTI-BUBBLE ============================================================ -->
+  <dialog id="dlg-exoskeleton" class="kk-modal" aria-labelledby="dlg-exo-title">
+    <div class="glass rounded-2xl p-5 sm:p-6 kk-scroll" style="max-height:88vh;">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <h2 id="dlg-exo-title" class="font-serif text-2xl text-parchment">Grenzen &amp; Gegenperspektiven</h2>
+        <button data-close-dialog="dlg-exoskeleton" type="button" aria-label="Schließen" class="glow-hover shrink-0 w-9 h-9 rounded-full border border-gold/40 text-gold">×</button>
+      </div>
+      <p class="text-sm text-parchment/70 mb-4">Drei Blickwinkel auf dasselbe Werkzeug — bewusst nebeneinandergestellt, weil keiner davon allein trägt.</p>
+
+      <details class="glass rounded-xl p-4 mb-3" open>
+        <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>1 · Neurobiologisch</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+        <div class="mt-3 text-sm text-parchment/75 leading-relaxed">
+          Langsame, ausatemlastige Atmung wird mit erhöhter Herzratenvariabilität und vagaler Aktivierung in Verbindung gebracht — ein plausibler, aber moderater Effekt, kein Schalter. Individuelle Unterschiede in der autonomen Reagibilität sind groß, und ein einzelner Zyklus verändert selten mehr als den Moment selbst.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 mb-3">
+        <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>2 · Systemisch &amp; Gesellschaftlich</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+        <div class="mt-3 text-sm text-parchment/75 leading-relaxed">
+          Ruhe braucht Rahmenbedingungen: einen ruhigen Ort, ein eigenes Gerät, Zeit ohne Beaufsichtigung. Nicht jedes Kind hat das. Eine Bildschirm-Anwendung, die Bildschirm-Überreizung ausgleichen soll, trägt zudem einen inneren Widerspruch in sich, den auch dieses Werkzeug nicht auflöst.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 mb-3">
+        <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>3 · Falsifikationskritik &amp; Genetik</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+        <div class="mt-3 text-sm text-parchment/75 leading-relaxed">
+          Temperament und sensorische Verarbeitung sind teils genetisch mitbestimmt; ein fixer 0,1-Hz-Takt passt nicht für jedes Nervensystem gleich gut, etwa bei stark abweichender Reizverarbeitung. Die konkrete Kopplung von prozeduraler Generierung an Atemverhalten ist zudem eine neuartige Kombination ohne eigene, dedizierte Wirksamkeitsstudien — die Bausteine sind einzeln untersucht, das Gesamtkonstrukt nicht.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 mb-3">
+        <summary class="flex items-center justify-between font-serif text-lg text-parchment"><span>Wie sich das System selbst verbessern ließe</span><span class="kk-chevron text-gold" aria-hidden="true">›</span></summary>
+        <div class="mt-3 text-sm text-parchment/75 leading-relaxed">
+          Denkbar wären eine optionale, einwilligungsbasierte Anbindung an echte Herzratenvariabilitäts-Sensorik statt der reinen Mausbewegungs-Näherung, ein offen einsehbarer Quellcode zur Prüfung durch Fachleute, sowie freiwillig teilbare, aggregierte Verlaufsübersichten für Bezugspersonen oder Therapeut:innen — ausdrücklich ohne Streak-Zwang oder Schuldmechanik.
+        </div>
+      </details>
+
+      <p class="text-sm text-parchment/60 leading-relaxed mt-4 pt-4 border-t border-white/10">
+        In der Zusammenschau: Kinder-Kompass ist ein Übungsraum für einen einzelnen, gut untersuchten Baustein — verlangsamte Atmung — verpackt in prozedurale Bilder, die Geduld sichtbar machen sollen. Er ersetzt weder Beziehung noch Versorgung noch strukturelle Veränderung, sondern ergänzt sie im besten Fall um eine kleine, wiederholbare Übung.
+      </p>
+    </div>
+  </dialog>
+
+<script>
+'use strict';
+(function(){
+
+  /* ============================================================ 1. UTILS & EVENTBUS ============================================================ */
+  class EventBus {
+    constructor(){ this._m = new Map(); }
+    on(evt, fn){ if(!this._m.has(evt)) this._m.set(evt, new Set()); this._m.get(evt).add(fn); return function(){ var s = this._m.get(evt); if(s) s.delete(fn); }.bind(this); }
+    emit(evt, payload){ var s = this._m.get(evt); if(s) s.forEach(function(fn){ try{ fn(payload); }catch(e){ console.error('EventBus['+evt+']', e); } }); }
+  }
+  var bus = new EventBus();
+
+  function mulberry32(seed){
+    var a = seed >>> 0;
+    return function(){
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function todaySeed(parasympatheticIndex){
+    var d = new Date();
+    var ymd = d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+    return (ymd + Math.round(parasympatheticIndex||50)) >>> 0;
+  }
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+  function easeInOutCubic(t){ return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+  function prefersReducedMotion(){ return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  function uid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-'+Date.now()+'-'+Math.random().toString(16).slice(2); }
+
+  /* ============================================================ 2. STORAGE (IndexedDB, In-Memory-Fallback) ============================================================ */
+  var Storage = (function(){
+    var db = null, memory = new Map(), useMemory = false;
+    var DB_NAME = 'kinder-kompass-db', STORE = 'entries', VERSION = 1;
+    function open(){
+      return new Promise(function(resolve){
+        if(!('indexedDB' in window)){ useMemory = true; return resolve(false); }
+        try{
+          var req = indexedDB.open(DB_NAME, VERSION);
+          req.onupgradeneeded = function(){ var d = req.result; if(!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE, {keyPath:'id'}); };
+          req.onsuccess = function(){ db = req.result; resolve(true); };
+          req.onerror = function(){ useMemory = true; resolve(false); };
+          req.onblocked = function(){ useMemory = true; resolve(false); };
+        }catch(e){ useMemory = true; resolve(false); }
+      });
+    }
+    function all(){
+      if(useMemory || !db) return Promise.resolve(Array.from(memory.values()));
+      return new Promise(function(resolve){
+        try{
+          var tx = db.transaction(STORE,'readonly');
+          var req = tx.objectStore(STORE).getAll();
+          req.onsuccess = function(){ resolve(req.result || []); };
+          req.onerror = function(){ resolve([]); };
+        }catch(e){ resolve([]); }
+      });
+    }
+    function put(item){
+      if(useMemory || !db){ memory.set(item.id, item); return Promise.resolve(true); }
+      return new Promise(function(resolve){
+        try{
+          var tx = db.transaction(STORE,'readwrite'); tx.objectStore(STORE).put(item);
+          tx.oncomplete = function(){ resolve(true); }; tx.onerror = function(){ resolve(false); };
+        }catch(e){ resolve(false); }
+      });
+    }
+    function del(id){
+      if(useMemory || !db){ memory.delete(id); return Promise.resolve(true); }
+      return new Promise(function(resolve){
+        try{
+          var tx = db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete(id);
+          tx.oncomplete = function(){ resolve(true); }; tx.onerror = function(){ resolve(false); };
+        }catch(e){ resolve(false); }
+      });
+    }
+    return { open: open, all: all, put: put, del: del, isMemory: function(){ return useMemory; } };
+  })();
+
+  /* ============================================================ 3. ZERO-KNOWLEDGE CRYPTO ============================================================ */
+  var CryptoBox = (function(){
+    var enc = new TextEncoder(), dec = new TextDecoder();
+    function available(){ return !!(window.isSecureContext && window.crypto && window.crypto.subtle); }
+    function bufToB64(buf){ return btoa(String.fromCharCode.apply(null, new Uint8Array(buf))); }
+    function b64ToBuf(b64){ var bin = atob(b64); var arr = new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i); return arr.buffer; }
+    function deriveKey(passphrase, saltBytes){
+      return crypto.subtle.importKey('raw', enc.encode(passphrase), 'PBKDF2', false, ['deriveKey']).then(function(base){
+        return crypto.subtle.deriveKey(
+          { name:'PBKDF2', salt: saltBytes, iterations: 210000, hash:'SHA-256' },
+          base, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']
+        );
+      });
+    }
+    function encryptText(passphrase, plaintext){
+      var salt = crypto.getRandomValues(new Uint8Array(16));
+      var iv = crypto.getRandomValues(new Uint8Array(12));
+      return deriveKey(passphrase, salt).then(function(key){
+        return crypto.subtle.encrypt({name:'AES-GCM', iv: iv}, key, enc.encode(plaintext));
+      }).then(function(cipherBuf){
+        return { cipher: bufToB64(cipherBuf), salt: bufToB64(salt), iv: bufToB64(iv) };
+      });
+    }
+    function decryptText(passphrase, record){
+      var salt = new Uint8Array(b64ToBuf(record.salt)), iv = new Uint8Array(b64ToBuf(record.iv)), cipher = b64ToBuf(record.cipher);
+      return deriveKey(passphrase, salt).then(function(key){
+        return crypto.subtle.decrypt({name:'AES-GCM', iv: iv}, key, cipher);
+      }).then(function(plainBuf){ return dec.decode(plainBuf); });
+    }
+    return { available: available, encryptText: encryptText, decryptText: decryptText };
+  })();
+
+  /* ============================================================ 4. SOMATISCHER PACING-OSZILLATOR ============================================================ */
+  function PacingOscillator(opts){
+    opts = opts || {};
+    this.inhale = opts.inhale || 4; this.exhale = opts.exhale || 6; this.cycle = this.inhale + this.exhale;
+    this.active = false; this.t0 = 0; this.phase = 'inhale'; this.cycleCount = 0;
+    this._raf = null; this._lastPhase = null;
+    this.stillSeconds = 0; this._lastMove = performance.now(); this._lastTick = performance.now();
+    this._lastMoveEventAt = 0;
+    var self = this;
+    function onMove(e){
+      var now = performance.now();
+      if(now - self._lastMoveEventAt < 80) bus.emit('rapid-movement', {});
+      self._lastMoveEventAt = now;
+      self._lastMove = now;
+    }
+    ['pointermove','touchmove'].forEach(function(evt){ window.addEventListener(evt, onMove, {passive:true}); });
+  }
+  PacingOscillator.prototype.getIdleSeconds = function(){ return (performance.now() - this._lastMove)/1000; };
+  PacingOscillator.prototype.start = function(){
+    if(this.active) return;
+    this.active = true; this.t0 = performance.now(); this.cycleCount = 0; this._lastPhase = null; this._lastTick = performance.now();
+    this._loop();
+    bus.emit('breath-start', {});
+  };
+  PacingOscillator.prototype.stop = function(){
+    this.active = false; if(this._raf) cancelAnimationFrame(this._raf);
+    bus.emit('breath-stop', {});
+  };
+  PacingOscillator.prototype._loop = function(){
+    var self = this;
+    this._raf = requestAnimationFrame(function(){ self._tick(); });
+  };
+  PacingOscillator.prototype._tick = function(){
+    if(!this.active) return;
+    var now = performance.now();
+    var elapsed = (now - this.t0)/1000;
+    var cyclePos = elapsed % this.cycle;
+    var cycleIndex = Math.floor(elapsed / this.cycle);
+    if(cycleIndex > this.cycleCount){ this.cycleCount = cycleIndex; bus.emit('breath-cycle', { count: this.cycleCount }); }
+    var phase, progress;
+    if(cyclePos < this.inhale){ phase='inhale'; progress = cyclePos/this.inhale; }
+    else { phase='exhale'; progress = (cyclePos-this.inhale)/this.exhale; }
+    var eased = easeInOutCubic(clamp(progress,0,1));
+    if(phase !== this._lastPhase){
+      this._lastPhase = phase; this.phase = phase;
+      if(phase==='inhale') bus.emit('inhale-start', { cycle: this.cycleCount });
+      else bus.emit('exhale-start', { cycle: this.cycleCount });
+    }
+    var dt = (now - this._lastTick)/1000; this._lastTick = now;
+    var idleFor = (now - this._lastMove)/1000;
+    if(idleFor > 0.6){ this.stillSeconds += dt; }
+    bus.emit('oscillator-frame', { phase: phase, progress: eased, stillSeconds: this.stillSeconds, cycleCount: this.cycleCount });
+    this._loop();
+  };
+  var oscillator = new PacingOscillator({ inhale:4, exhale:6 });
+
+  /* ============================================================ 5. DDA-KALIBRIERUNG (4PL-IRT-Modell) ============================================================ */
+  function DDAController(){
+    this.theta = 0.5; this.a = 6; this.b = 0.5; this.c = 0.05; this.dUpper = 1.0;
+    this._rapidEvents = 0; this._windowStart = performance.now();
+    var self = this;
+    bus.on('rapid-movement', function(){ self._rapidEvents++; });
+  }
+  DDAController.prototype._refreshUpperAsymptote = function(){
+    var now = performance.now();
+    var windowSec = (now - this._windowStart)/1000;
+    if(windowSec > 6){
+      var rate = this._rapidEvents / windowSec;
+      this.dUpper = clamp(1 - rate*0.08, 0.4, 1.0);
+      this._rapidEvents = 0; this._windowStart = now;
+    }
+  };
+  DDAController.prototype.p = function(){
+    this._refreshUpperAsymptote();
+    return this.c + (this.dUpper-this.c)/(1+Math.exp(-this.a*(this.theta-this.b)));
+  };
+  DDAController.prototype.updateTheta = function(observedStillnessRatio){
+    var predicted = this.p();
+    this.theta = clamp(this.theta + 0.12*(observedStillnessRatio - predicted), 0, 1);
+  };
+  DDAController.prototype.complexity = function(){
+    var P = this.p();
+    return {
+      p: P,
+      wfcVariety: Math.round(4 + 2*P),
+      lsystemMaxGen: Math.round(3 + 3*P),
+      mazeWidth: Math.round(8 + 6*P)
+    };
+  };
+  var dda = new DDAController();
+  var lastCycleStillSeconds = 0;
+  bus.on('breath-cycle', function(){
+    var ratio = clamp((oscillator.stillSeconds - lastCycleStillSeconds) / oscillator.cycle, 0, 1);
+    dda.updateTheta(ratio);
+    lastCycleStillSeconds = oscillator.stillSeconds;
+  });
+
+  /* ============================================================ 6. WFC-RAUMSYNTHESE ============================================================ */
+  function WFCEngine(cols, rows, rng){
+    this.cols = cols; this.rows = rows; this.rng = rng;
+    this.tiles = ['grass','path','water','tree','rock','flower'];
+    this.weights = {grass:10,path:4,water:3,tree:4,rock:3,flower:3};
+    this.colors = {grass:'#7c9473', path:'#d8c9a3', water:'#5f7f97', tree:'#4c6b4f', rock:'#9a9186', flower:'#e8b4bc'};
+    this.adj = {
+      grass:['grass','path','tree','flower','rock','water'],
+      path:['grass','path'],
+      water:['water','grass'],
+      tree:['grass','tree'],
+      rock:['grass','rock','path'],
+      flower:['grass','flower']
+    };
+    this.reset(this.tiles);
+  }
+  WFCEngine.prototype.reset = function(activeTiles){
+    var tiles = activeTiles || this.tiles;
+    if(tiles.indexOf('grass')===-1) tiles = ['grass'].concat(tiles);
+    this.active = tiles;
+    this.grid = [];
+    for(var r=0;r<this.rows;r++){
+      var row = [];
+      for(var c=0;c<this.cols;c++) row.push(new Set(tiles));
+      this.grid.push(row);
+    }
+    this.collapsedCount = 0; this.done = false;
+  };
+  WFCEngine.prototype._neighbors = function(r,c){
+    var list = [];
+    if(r>0) list.push([r-1,c]);
+    if(r<this.rows-1) list.push([r+1,c]);
+    if(c>0) list.push([r,c-1]);
+    if(c<this.cols-1) list.push([r,c+1]);
+    return list;
+  };
+  WFCEngine.prototype._lowestEntropyCell = function(){
+    var best=null, bestScore=Infinity;
+    for(var r=0;r<this.rows;r++) for(var c=0;c<this.cols;c++){
+      var s = this.grid[r][c];
+      if(s.size<=1) continue;
+      var score = s.size + this.rng()*0.01;
+      if(score<bestScore){ bestScore=score; best=[r,c]; }
+    }
+    return best;
+  };
+  WFCEngine.prototype.step = function(){
+    if(this.done) return null;
+    var cell = this._lowestEntropyCell();
+    if(!cell){ this.done=true; return null; }
+    var r=cell[0], c=cell[1];
+    var options = Array.from(this.grid[r][c]);
+    var total = 0; for(var i=0;i<options.length;i++) total += (this.weights[options[i]]||1);
+    var roll = this.rng()*total, chosen = options[0];
+    for(var j=0;j<options.length;j++){ roll -= (this.weights[options[j]]||1); if(roll<=0){ chosen=options[j]; break; } }
+    this.grid[r][c] = new Set([chosen]);
+    this.collapsedCount++;
+    this._propagate(r,c);
+    if(this.collapsedCount >= this.rows*this.cols) this.done = true;
+    return {r:r,c:c,tile:chosen};
+  };
+  WFCEngine.prototype._propagate = function(r,c){
+    var stack=[[r,c]];
+    while(stack.length){
+      var cur = stack.pop(); var cr=cur[0], cc=cur[1];
+      var curSet = this.grid[cr][cc];
+      var neigh = this._neighbors(cr,cc);
+      for(var k=0;k<neigh.length;k++){
+        var nr=neigh[k][0], nc=neigh[k][1];
+        var nSet = this.grid[nr][nc];
+        if(nSet.size<=1) continue;
+        var allowed = new Set();
+        curSet.forEach(function(t){ (this.adj[t]||[]).forEach(function(a){ allowed.add(a); }); }.bind(this));
+        var changed=false;
+        Array.from(nSet).forEach(function(t){ if(!allowed.has(t)){ nSet.delete(t); changed=true; } });
+        if(nSet.size===0){ nSet.add('grass'); }
+        if(changed) stack.push([nr,nc]);
+      }
+    }
+  };
+  WFCEngine.prototype.render = function(ctx,w,h){
+    var cw = w/this.cols, ch = h/this.rows;
+    ctx.clearRect(0,0,w,h);
+    for(var r=0;r<this.rows;r++) for(var c=0;c<this.cols;c++){
+      var s = this.grid[r][c];
+      var tile = s.size===1 ? Array.from(s)[0] : null;
+      var x=c*cw, y=r*ch;
+      if(tile){
+        ctx.fillStyle = this.colors[tile];
+        ctx.fillRect(x,y,cw,ch);
+        if(tile==='tree'){ ctx.fillStyle='rgba(6,7,20,.25)'; ctx.beginPath(); ctx.arc(x+cw/2,y+ch/2,Math.min(cw,ch)*0.28,0,Math.PI*2); ctx.fill(); }
+        if(tile==='flower'){ ctx.fillStyle='#7c9473'; ctx.fillRect(x,y,cw,ch); ctx.fillStyle='#e8b4bc'; ctx.beginPath(); ctx.arc(x+cw/2,y+ch/2,Math.min(cw,ch)*0.16,0,Math.PI*2); ctx.fill(); }
+      } else {
+        ctx.fillStyle = 'rgba(244,234,217,0.05)';
+        ctx.fillRect(x,y,cw,ch);
+      }
+      ctx.strokeStyle='rgba(6,7,20,.35)'; ctx.lineWidth=1; ctx.strokeRect(x,y,cw,ch);
+    }
+  };
+  var wfc = new WFCEngine(10, 6, mulberry32(todaySeed(50)));
+
+  /* ============================================================ 7. FRAKTALER L-SYSTEM-GARTEN ============================================================ */
+  function LSystemEngine(rng){ this.rng = rng; this.maxGen = 5; this.reset(); }
+  LSystemEngine.prototype.reset = function(){ this.axiom='F'; this.current=this.axiom; this.generation=0; };
+  LSystemEngine.prototype._rule = function(){
+    var r = this.rng();
+    if(r<0.34) return 'F[+F]F[-F]F';
+    if(r<0.67) return 'F[+F]F';
+    return 'F[-F]F';
+  };
+  LSystemEngine.prototype.grow = function(maxGen){
+    this.maxGen = maxGen || this.maxGen;
+    if(this.generation>=this.maxGen) return false;
+    var next=''; var self=this;
+    for(var i=0;i<this.current.length;i++){ var ch=this.current[i]; next += (ch==='F') ? self._rule() : ch; }
+    if(next.length>4000) next = next.slice(0,4000);
+    this.current = next; this.generation++;
+    return true;
+  };
+  LSystemEngine.prototype.render = function(ctx,w,h){
+    ctx.clearRect(0,0,w,h);
+    var stack=[]; var x=w/2, y=h*0.94, angle=-90;
+    var baseLen = Math.max(3, 9 - this.generation*0.9);
+    var baseAngleVar = 22;
+    ctx.lineCap='round';
+    for(var i=0;i<this.current.length;i++){
+      var ch = this.current[i];
+      if(ch==='F'){
+        var rad = angle*Math.PI/180;
+        var nx = x+Math.cos(rad)*baseLen, ny = y+Math.sin(rad)*baseLen;
+        var depth = stack.length;
+        ctx.strokeStyle = depth===0 ? 'rgba(217,163,92,.9)' : ('rgba(124,148,115,'+clamp(1-depth*0.12,0.35,0.95)+')');
+        ctx.lineWidth = Math.max(1, 3.2-depth*0.35);
+        ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(nx,ny); ctx.stroke();
+        if(depth>=2 && this.rng()<0.06){
+          ctx.beginPath(); ctx.fillStyle='rgba(232,180,188,.85)'; ctx.arc(nx,ny,2.2,0,Math.PI*2); ctx.fill();
+        }
+        x=nx; y=ny;
+      } else if(ch==='+'){ angle += baseAngleVar*(0.8+this.rng()*0.4); }
+      else if(ch==='-'){ angle -= baseAngleVar*(0.8+this.rng()*0.4); }
+      else if(ch==='['){ stack.push({x:x,y:y,angle:angle}); }
+      else if(ch===']'){ var s=stack.pop(); if(s){ x=s.x; y=s.y; angle=s.angle; } }
+    }
+  };
+  var lsystem = new LSystemEngine(mulberry32(todaySeed(50)+1));
+  var lsystemNextGrowAt = 12;
+
+  /* ============================================================ 8. ELLERS LABYRINTH DES INNEHALTENS ============================================================ */
+  function MazeEngine(rng){ this.rng = rng; this.width = 10; this.reset(10); }
+  MazeEngine.prototype.reset = function(width){
+    this.width = width || this.width;
+    this.rows = [];
+    this.rowSets = [];
+    for(var i=0;i<this.width;i++) this.rowSets.push(0);
+    this.setCounter = 1;
+  };
+  MazeEngine.prototype.nextRow = function(isLast){
+    var w = this.width;
+    for(var i=0;i<w;i++){ if(!this.rowSets[i]) this.rowSets[i]=this.setCounter++; }
+    var rightWalls = new Array(w).fill(true);
+    for(var i2=0;i2<w-1;i2++){
+      var diff = this.rowSets[i2] !== this.rowSets[i2+1];
+      var join = isLast ? diff : (diff && this.rng() < 0.5);
+      if(join){
+        rightWalls[i2]=false;
+        var oldSet = this.rowSets[i2+1], newSet = this.rowSets[i2];
+        for(var k=0;k<w;k++) if(this.rowSets[k]===oldSet) this.rowSets[k]=newSet;
+      }
+    }
+    var downWalls = new Array(w).fill(true);
+    var bySet = new Map();
+    for(var i3=0;i3<w;i3++){
+      if(!bySet.has(this.rowSets[i3])) bySet.set(this.rowSets[i3], []);
+      bySet.get(this.rowSets[i3]).push(i3);
+    }
+    var nextRowSets = new Array(w).fill(0);
+    if(!isLast){
+      bySet.forEach(function(idxs, setId){
+        var atLeastOne=false;
+        for(var m=0;m<idxs.length;m++){
+          var idx = idxs[m];
+          var isLastOfSet = (m===idxs.length-1);
+          var connect = this.rng() < 0.42 || (!atLeastOne && isLastOfSet);
+          if(connect){ downWalls[idx]=false; nextRowSets[idx]=setId; atLeastOne=true; }
+        }
+      }.bind(this));
+    }
+    var row = { rightWalls: rightWalls, downWalls: downWalls, sets: this.rowSets.slice() };
+    this.rows.push(row);
+    if(!isLast) this.rowSets = nextRowSets;
+    return row;
+  };
+  MazeEngine.prototype.render = function(ctx,w,h){
+    ctx.clearRect(0,0,w,h);
+    var cell = Math.min(w/this.width, h/Math.max(this.rows.length,10));
+    var offsetX = (w - cell*this.width)/2;
+    var offsetY = Math.max(0, h - cell*this.rows.length);
+    ctx.strokeStyle = 'rgba(217,163,92,.75)'; ctx.lineWidth = Math.max(1.5, cell*0.08);
+    ctx.lineCap='round';
+    // outer left/right boundary
+    ctx.beginPath(); ctx.moveTo(offsetX,offsetY); ctx.lineTo(offsetX, offsetY+cell*this.rows.length); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(offsetX+cell*this.width,offsetY); ctx.lineTo(offsetX+cell*this.width, offsetY+cell*this.rows.length); ctx.stroke();
+    for(var r=0;r<this.rows.length;r++){
+      var row = this.rows[r];
+      var y0 = offsetY + r*cell, y1 = y0+cell;
+      for(var c=0;c<this.width;c++){
+        var x0 = offsetX + c*cell, x1 = x0+cell;
+        if(row.rightWalls[c] && c<this.width-1){ ctx.beginPath(); ctx.moveTo(x1,y0); ctx.lineTo(x1,y1); ctx.stroke(); }
+        if(row.downWalls[c]){ ctx.beginPath(); ctx.moveTo(x0,y1); ctx.lineTo(x1,y1); ctx.stroke(); }
+      }
+    }
+    // wandering light following the first open vertical connection per row
+    if(this.rows.length){
+      ctx.save();
+      var lightCol = 0;
+      for(var r2=0;r2<this.rows.length;r2++){
+        var rowD = this.rows[r2];
+        var cy = offsetY + r2*cell + cell/2;
+        var cx = offsetX + lightCol*cell + cell/2;
+        var alpha = 0.25 + 0.55*(r2/this.rows.length);
+        ctx.fillStyle = 'rgba(217,163,92,'+alpha+')';
+        ctx.beginPath(); ctx.arc(cx,cy,cell*0.14,0,Math.PI*2); ctx.fill();
+        if(!rowD.downWalls[lightCol]){ /* stays */ }
+        else {
+          var found=-1;
+          for(var cc=0;cc<this.width;cc++) if(!rowD.downWalls[cc]){ found=cc; break; }
+          if(found>=0) lightCol=found;
+        }
+      }
+      ctx.restore();
+    }
+  };
+  var maze = new MazeEngine(mulberry32(todaySeed(50)+2));
+  var mazeIdleAccumulated = 0;
+  var mazeIdleInterval = null;
+
+  /* ============================================================ 9. HINTERGRUND-PARTIKELFELD ============================================================ */
+  function ParticleField(canvas){
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.mouse = {x:-9999,y:-9999};
+    this.reduced = prefersReducedMotion();
+    this._resize();
+    var self = this;
+    window.addEventListener('resize', function(){ self._resize(); self._seed(); });
+    window.addEventListener('pointermove', function(e){ self.mouse.x=e.clientX; self.mouse.y=e.clientY; });
+    window.addEventListener('pointerleave', function(){ self.mouse.x=-9999; self.mouse.y=-9999; });
+    this._seed();
+    if(!this.reduced){ this._loop(); } else { this._step(false); }
+  }
+  ParticleField.prototype._resize = function(){
+    this.dpr = Math.min(window.devicePixelRatio||1, 2);
+    this.w = this.canvas.width = Math.floor(window.innerWidth*this.dpr);
+    this.h = this.canvas.height = Math.floor(window.innerHeight*this.dpr);
+  };
+  ParticleField.prototype._seed = function(){
+    var count = Math.round((window.innerWidth*window.innerHeight)/16000);
+    count = Math.min(count,140);
+    this.particles = [];
+    for(var i=0;i<count;i++){
+      this.particles.push({
+        x: Math.random()*this.w, y: Math.random()*this.h,
+        vx:(Math.random()-.5)*0.25*this.dpr, vy:(Math.random()-.5)*0.25*this.dpr,
+        r: (Math.random()*1.4+0.6)*this.dpr
+      });
+    }
+  };
+  ParticleField.prototype._loop = function(){
+    var self = this;
+    this._step(true);
+    this._raf = requestAnimationFrame(function(){ self._loop(); });
+  };
+  ParticleField.prototype._step = function(animate){
+    var ctx=this.ctx; ctx.clearRect(0,0,this.w,this.h);
+    var mx=this.mouse.x*this.dpr, my=this.mouse.y*this.dpr;
+    for(var i=0;i<this.particles.length;i++){
+      var p = this.particles[i];
+      if(animate){
+        var dx=mx-p.x, dy=my-p.y, dist=Math.hypot(dx,dy)||1;
+        if(dist<160*this.dpr){
+          var force = dist<45*this.dpr ? -0.9 : 0.55;
+          p.vx += (dx/dist)*force*0.02; p.vy += (dy/dist)*force*0.02;
+        }
+        p.vx*=0.965; p.vy*=0.965;
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>this.w) p.vx*=-1;
+        if(p.y<0||p.y>this.h) p.vy*=-1;
+      }
+      ctx.beginPath(); ctx.fillStyle='rgba(244,234,217,0.55)'; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+    }
+    if(animate){
+      for(var a=0;a<this.particles.length;a++) for(var b=a+1;b<this.particles.length;b++){
+        var pa=this.particles[a], pb=this.particles[b];
+        var d = Math.hypot(pa.x-pb.x,pa.y-pb.y);
+        if(d<110*this.dpr){
+          ctx.strokeStyle = 'rgba(217,163,92,'+((1-d/(110*this.dpr))*0.25)+')';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();
+        }
+      }
+    }
+  };
+
+  /* ============================================================ 10. DIALOG- / FOKUS-MANAGER ============================================================ */
+  function openDialog(dlg, trigger){
+    dlg._returnFocus = trigger || document.activeElement;
+    if(typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open','');
+    var focusable = dlg.querySelector('[data-autofocus]') || dlg.querySelector('button, [href], input, select, textarea');
+    if(focusable) focusable.focus();
+  }
+  function wireDialog(id){
+    var dlg = document.getElementById(id);
+    if(!dlg) return;
+    dlg.addEventListener('close', function(){ if(dlg._returnFocus && dlg._returnFocus.focus) dlg._returnFocus.focus(); });
+    dlg.addEventListener('click', function(e){
+      var rect = dlg.getBoundingClientRect();
+      var inside = rect.top<=e.clientY && e.clientY<=rect.top+rect.height && rect.left<=e.clientX && e.clientX<=rect.left+rect.width;
+      if(!inside) dlg.close();
+    });
+  }
+  ['dlg-wfc','dlg-lsystem','dlg-maze','dlg-journal','dlg-decrypt','dlg-exoskeleton'].forEach(wireDialog);
+
+  document.querySelectorAll('[data-close-dialog]').forEach(function(btn){
+    btn.addEventListener('click', function(){ var d = document.getElementById(btn.getAttribute('data-close-dialog')); if(d) d.close(); });
+  });
+  document.querySelectorAll('[data-open-dialog]').forEach(function(btn){
+    btn.addEventListener('click', function(){ var d = document.getElementById(btn.getAttribute('data-open-dialog')); if(d) openDialog(d, btn); });
+  });
+
+  /* ============================================================ 11. CANVAS-GRÖSSE ============================================================ */
+  function sizeCanvas(canvas){
+    var dpr = Math.min(window.devicePixelRatio||1, 2);
+    var rect = canvas.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.floor(rect.width*dpr));
+    canvas.height = Math.max(1, Math.floor(rect.height*dpr));
+    return {ctx: canvas.getContext('2d'), w: canvas.width, h: canvas.height};
+  }
+
+  /* ============================================================ 12. UI-WIRING: ATEM ============================================================ */
+  var ringGlow = document.getElementById('ring-glow');
+  var ringCore = document.getElementById('ring-core');
+  var ringText = document.getElementById('ring-text');
+  var phaseLabel = document.getElementById('phase-label');
+  var cycleCountEl = document.getElementById('cycle-count');
+  var stillnessMeterEl = document.getElementById('stillness-meter');
+  var btnToggleSession = document.getElementById('btn-toggle-session');
+  var lastAnnouncedPhase = null;
+
+  bus.on('oscillator-frame', function(f){
+    var minR = 55, maxR = 95;
+    var r = f.phase==='inhale' ? (minR + (maxR-minR)*f.progress) : (maxR - (maxR-minR)*f.progress);
+    ringCore.setAttribute('r', r.toFixed(1));
+    ringGlow.setAttribute('r', (r*1.15).toFixed(1));
+    ringText.textContent = f.phase==='inhale' ? 'Einatmen' : 'Ausatmen';
+    cycleCountEl.textContent = f.cycleCount;
+    stillnessMeterEl.textContent = Math.floor(f.stillSeconds) + ' s';
+    if(f.phase !== lastAnnouncedPhase){ lastAnnouncedPhase = f.phase; phaseLabel.textContent = f.phase==='inhale' ? 'Einatmen.' : 'Ausatmen.'; }
+  });
+
+  btnToggleSession.addEventListener('click', function(){
+    if(oscillator.active){
+      oscillator.stop();
+      btnToggleSession.textContent = 'Sitzung beginnen';
+      btnToggleSession.setAttribute('aria-pressed','false');
+    } else {
+      oscillator.start();
+      btnToggleSession.textContent = 'Sitzung beenden';
+      btnToggleSession.setAttribute('aria-pressed','true');
+    }
+  });
+
+  /* ============================================================ 13. UI-WIRING: WFC ============================================================ */
+  var wfcCanvas = document.getElementById('wfc-canvas');
+  var wfcStatus = document.getElementById('wfc-status');
+  var dlgWfc = document.getElementById('dlg-wfc');
+  function renderWfcIfOpen(){
+    if(!dlgWfc.open) return;
+    var sized = sizeCanvas(wfcCanvas);
+    wfc.render(sized.ctx, sized.w, sized.h);
+    wfcStatus.textContent = wfc.collapsedCount + ' / ' + (wfc.rows*wfc.cols) + ' Zellen gesetzt';
+  }
+  bus.on('inhale-start', function(){
+    if(!oscillator.active) return;
+    if(wfc.done){
+      var variety = dda.complexity().wfcVariety;
+      var pool = wfc.tiles.slice(1); // ohne grass, das ist immer dabei
+      var subset = ['grass'].concat(pool.slice(0, clamp(variety-1,1,pool.length)));
+      wfc.reset(subset);
+    } else {
+      wfc.step();
+    }
+    renderWfcIfOpen();
+  });
+  document.querySelector('[data-open-dialog="dlg-wfc"]').addEventListener('click', function(){ requestAnimationFrame(renderWfcIfOpen); });
+  document.getElementById('btn-wfc-reset').addEventListener('click', function(){ wfc.reset(wfc.tiles); renderWfcIfOpen(); });
+  window.addEventListener('resize', function(){ renderWfcIfOpen(); });
+
+  /* ============================================================ 14. UI-WIRING: L-SYSTEM ============================================================ */
+  var lsystemCanvas = document.getElementById('lsystem-canvas');
+  var lsystemStatus = document.getElementById('lsystem-status');
+  var dlgLsystem = document.getElementById('dlg-lsystem');
+  function renderLsystemIfOpen(){
+    if(!dlgLsystem.open) return;
+    var sized = sizeCanvas(lsystemCanvas);
+    lsystem.render(sized.ctx, sized.w, sized.h);
+    lsystemStatus.textContent = 'Generation ' + lsystem.generation + ' · gehaltene Stille: ' + Math.floor(oscillator.stillSeconds) + ' s';
+  }
+  bus.on('oscillator-frame', function(f){
+    if(!oscillator.active) return;
+    if(f.stillSeconds >= lsystemNextGrowAt){
+      lsystemNextGrowAt += 12;
+      var grew = lsystem.grow(dda.complexity().lsystemMaxGen);
+      if(!grew){ lsystem.reset(); }
+      renderLsystemIfOpen();
+    }
+  });
+  document.querySelector('[data-open-dialog="dlg-lsystem"]').addEventListener('click', function(){ requestAnimationFrame(renderLsystemIfOpen); });
+  window.addEventListener('resize', function(){ renderLsystemIfOpen(); });
+
+  /* ============================================================ 15. UI-WIRING: LABYRINTH ============================================================ */
+  var mazeCanvas = document.getElementById('maze-canvas');
+  var mazeStatus = document.getElementById('maze-status');
+  var dlgMaze = document.getElementById('dlg-maze');
+  function renderMazeIfOpen(){
+    if(!dlgMaze.open) return;
+    var sized = sizeCanvas(mazeCanvas);
+    maze.render(sized.ctx, sized.w, sized.h);
+    mazeStatus.textContent = maze.rows.length + ' Reihen geöffnet';
+  }
+  function mazeIdleCheck(){
+    if(!dlgMaze.open) return;
+    var idle = oscillator.getIdleSeconds();
+    if(idle >= 4){
+      maze.nextRow(false);
+      renderMazeIfOpen();
+      oscillator._lastMove = performance.now() - 3900; // knapp unter Schwelle halten für flüssiges Weiterwachsen
+    }
+  }
+  document.querySelector('[data-open-dialog="dlg-maze"]').addEventListener('click', function(){
+    requestAnimationFrame(function(){
+      var width = dda.complexity().mazeWidth;
+      if(maze.rows.length===0) maze.reset(width);
+      renderMazeIfOpen();
+    });
+    if(mazeIdleInterval) clearInterval(mazeIdleInterval);
+    mazeIdleInterval = setInterval(mazeIdleCheck, 500);
+  });
+  dlgMaze.addEventListener('close', function(){ if(mazeIdleInterval){ clearInterval(mazeIdleInterval); mazeIdleInterval=null; } });
+  document.getElementById('btn-maze-reset').addEventListener('click', function(){ maze.reset(dda.complexity().mazeWidth); renderMazeIfOpen(); });
+  window.addEventListener('resize', function(){ renderMazeIfOpen(); });
+
+  /* ============================================================ 16. UI-WIRING: KOMPASS-TABS ============================================================ */
+  var tierMap = {'7-12':'tier-7-12','12-20':'tier-12-20','20plus':'tier-20plus'};
+  document.querySelectorAll('.kk-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.kk-tab').forEach(function(t){ t.setAttribute('aria-selected','false'); });
+      tab.setAttribute('aria-selected','true');
+      Object.keys(tierMap).forEach(function(key){
+        var panel = document.getElementById(tierMap[key]);
+        panel.classList.toggle('hidden', key !== tab.getAttribute('data-tier'));
+      });
+    });
+  });
+
+  /* ============================================================ 17. UI-WIRING: TAGEBUCH ============================================================ */
+  var dlgJournal = document.getElementById('dlg-journal');
+  var journalText = document.getElementById('journal-text');
+  var journalPass = document.getElementById('journal-pass');
+  var journalError = document.getElementById('journal-error');
+  var journalList = document.getElementById('journal-list');
+  var journalEmpty = document.getElementById('journal-empty');
+  var storageNotice = document.getElementById('storage-notice');
+  var dlgDecrypt = document.getElementById('dlg-decrypt');
+  var decryptPass = document.getElementById('decrypt-pass');
+  var decryptError = document.getElementById('decrypt-error');
+  var decryptResult = document.getElementById('decrypt-result');
+  var decryptForm = document.getElementById('decrypt-form');
+  var activeDecryptId = null;
+
+  var channel = ('BroadcastChannel' in window) ? new BroadcastChannel('kinder-kompass-sync') : null;
+  if(channel){ channel.addEventListener('message', function(e){ if(e.data && e.data.type==='journal-updated') refreshJournalList(); }); }
+  function broadcastJournalUpdate(){ if(channel) channel.postMessage({type:'journal-updated'}); }
+
+  document.getElementById('btn-new-entry').addEventListener('click', function(e){
+    journalText.value=''; journalPass.value=''; journalError.textContent='';
+    openDialog(dlgJournal, e.currentTarget);
+  });
+  document.querySelectorAll('.kk-write').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      journalText.value = 'Impuls: ' + btn.getAttribute('data-prompt') + '\n\n';
+      journalPass.value=''; journalError.textContent='';
+      openDialog(dlgJournal, btn);
+    });
+  });
+
+  document.getElementById('journal-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    journalError.textContent='';
+    if(!CryptoBox.available()){ journalError.textContent='Verschlüsselung benötigt einen sicheren Kontext (HTTPS oder localhost).'; return; }
+    var text = journalText.value.trim();
+    var pass = journalPass.value;
+    if(text.length===0){ journalError.textContent='Bitte etwas Text eingeben.'; return; }
+    if(pass.length<6){ journalError.textContent='Das Passwort braucht mindestens 6 Zeichen.'; return; }
+    CryptoBox.encryptText(pass, text).then(function(enc){
+      var record = { id: uid(), createdAt: Date.now(), cipher: enc.cipher, salt: enc.salt, iv: enc.iv };
+      return Storage.put(record);
+    }).then(function(){
+      journalPass.value=''; journalText.value='';
+      dlgJournal.close();
+      refreshJournalList();
+      broadcastJournalUpdate();
+    }).catch(function(err){
+      console.error(err);
+      journalError.textContent='Speichern nicht möglich. Bitte erneut versuchen.';
+    });
+  });
+
+  decryptForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    decryptError.textContent=''; decryptResult.classList.add('hidden'); decryptResult.textContent='';
+    if(!activeDecryptId) return;
+    Storage.all().then(function(items){
+      var record = items.find(function(it){ return it.id===activeDecryptId; });
+      if(!record){ decryptError.textContent='Eintrag nicht gefunden.'; return; }
+      return CryptoBox.decryptText(decryptPass.value, record).then(function(plain){
+        decryptResult.textContent = plain;
+        decryptResult.classList.remove('hidden');
+        decryptPass.value='';
+      });
+    }).catch(function(){
+      decryptError.textContent='Falsches Passwort oder beschädigter Eintrag.';
+    });
+  });
+
+  function formatDate(ts){
+    try{ return new Date(ts).toLocaleString('de-DE', {dateStyle:'medium', timeStyle:'short'}); }catch(e){ return new Date(ts).toISOString(); }
+  }
+
+  function refreshJournalList(){
+    Storage.all().then(function(items){
+      items.sort(function(a,b){ return b.createdAt - a.createdAt; });
+      journalList.innerHTML='';
+      journalEmpty.classList.toggle('hidden', items.length>0);
+      if(Storage.isMemory()){
+        storageNotice.textContent = 'Hinweis: IndexedDB ist in dieser Umgebung nicht verfügbar — Einträge bleiben nur für die aktuelle Sitzung im Arbeitsspeicher erhalten. Für dauerhafte, verschlüsselte Speicherung die Datei in einem eigenen Browser-Tab öffnen.';
+        storageNotice.classList.remove('hidden');
+      }
+      items.forEach(function(item){
+        var li = document.createElement('li');
+        li.className='glass rounded-xl p-3 flex items-center justify-between gap-3 text-sm';
+        var left = document.createElement('span');
+        left.className='text-parchment/75';
+        left.textContent = formatDate(item.createdAt) + ' · verschlüsselt';
+        var actions = document.createElement('span');
+        actions.className='flex items-center gap-2 shrink-0';
+        var showBtn = document.createElement('button');
+        showBtn.type='button'; showBtn.className='glow-hover px-3 py-1 rounded-full border border-gold/40 text-gold text-xs';
+        showBtn.textContent='Anzeigen';
+        showBtn.addEventListener('click', function(){
+          activeDecryptId = item.id; decryptError.textContent=''; decryptResult.classList.add('hidden'); decryptPass.value='';
+          openDialog(dlgDecrypt, showBtn);
+        });
+        var delBtn = document.createElement('button');
+        delBtn.type='button'; delBtn.className='glow-hover px-3 py-1 rounded-full border border-bloom/40 text-bloom text-xs';
+        delBtn.textContent='Löschen';
+        var confirming = false;
+        delBtn.addEventListener('click', function(){
+          if(!confirming){ confirming=true; delBtn.textContent='Wirklich?'; setTimeout(function(){ confirming=false; delBtn.textContent='Löschen'; }, 3000); return; }
+          Storage.del(item.id).then(function(){ refreshJournalList(); broadcastJournalUpdate(); });
+        });
+        actions.appendChild(showBtn); actions.appendChild(delBtn);
+        li.appendChild(left); li.appendChild(actions);
+        journalList.appendChild(li);
+      });
+    });
+  }
+
+  /* ============================================================ 18. SERVICE WORKER (progressive enhancement) ============================================================ */
+  (function registerSW(){
+    if(!('serviceWorker' in navigator) || !window.isSecureContext) return;
+    var swSource = [
+      "var CACHE = 'kk-shell-v1';",
+      "self.addEventListener('install', function(e){ self.skipWaiting(); });",
+      "self.addEventListener('activate', function(e){ self.clients.claim(); });",
+      "self.addEventListener('fetch', function(e){",
+      "  var req = e.request;",
+      "  if(req.method !== 'GET') return;",
+      "  if(req.headers.get('range')){",
+      "    e.respondWith(fetch(req).catch(function(){ return new Response(null, {status:416}); }));",
+      "    return;",
+      "  }",
+      "  e.respondWith(caches.open(CACHE).then(function(cache){",
+      "    return cache.match(req).then(function(cached){",
+      "      if(cached) return cached;",
+      "      return fetch(req).then(function(res){",
+      "        if(res && res.ok && req.url.indexOf(self.location.origin)===0) cache.put(req, res.clone());",
+      "        return res;",
+      "      }).catch(function(){ return cached || Response.error(); });",
+      "    });",
+      "  }));",
+      "});"
+    ].join('\n');
+    try{
+      var blob = new Blob([swSource], {type:'text/javascript'});
+      var url = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(url).catch(function(){ /* Manche Browser lehnen blob:-Registrierung aus Spezifikationsgründen ab; die App funktioniert vollständig auch ohne Offline-Cache. */ });
+    }catch(e){ /* Service Worker ist ein optionales Zusatzmerkmal */ }
+  })();
+
+  /* ============================================================ 19. AMBIENTE (Web Audio, ersetzt gestreamte Audio-Blobs) ============================================================ */
+  var AmbientAudio = (function(){
+    var ctx=null, gain=null, osc1=null, osc2=null, running=false;
+    function ensure(){
+      if(ctx) return;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return;
+      ctx = new AC();
+      gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
+      osc1 = ctx.createOscillator(); osc1.type='sine'; osc1.frequency.value=110;
+      osc2 = ctx.createOscillator(); osc2.type='sine'; osc2.frequency.value=164.8;
+      osc1.connect(gain); osc2.connect(gain);
+      osc1.start(); osc2.start();
+    }
+    function start(){
+      ensure(); if(!ctx || running) return; running=true;
+      if(ctx.state==='suspended') ctx.resume();
+      gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime+1.5);
+    }
+    function stop(){
+      if(!ctx || !running) return; running=false;
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime+1.5);
+    }
+    function pulse(phase){
+      if(!ctx || !running) return;
+      var target = phase==='inhale' ? 0.07 : 0.035;
+      gain.gain.setTargetAtTime(target, ctx.currentTime, 1.2);
+    }
+    return { start: start, stop: stop, pulse: pulse };
+  })();
+  bus.on('breath-start', function(){ AmbientAudio.start(); });
+  bus.on('breath-stop', function(){ AmbientAudio.stop(); });
+  bus.on('inhale-start', function(){ AmbientAudio.pulse('inhale'); });
+  bus.on('exhale-start', function(){ AmbientAudio.pulse('exhale'); });
+
+  /* ============================================================ 20. INIT ============================================================ */
+  document.addEventListener('DOMContentLoaded', function(){
+    var bgCanvas = document.getElementById('bg-particles');
+    if(bgCanvas) new ParticleField(bgCanvas);
+    Storage.open().then(function(){ refreshJournalList(); });
+  });
+
+})();
+</script>
+</body>
+</html>

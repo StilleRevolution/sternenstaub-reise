@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="de" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Up Your Life: Dein Guide für die Schule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .text-shadow-custom {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #E2E8F0;
+            border-radius: 9999px;
+        }
+        .timeline-event {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1rem;
+        }
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            left: calc(1rem - 6px);
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background-color: #118AB2;
+            border-radius: 9999px;
+            border: 2px solid #073B4C;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #073B4C;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+            transition: opacity 0.5s ease-out;
+        }
+        .loading-spinner {
+            border: 8px solid rgba(255,255,255,0.2);
+            border-top: 8px solid #FFD166;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .teamwork-bar-container {
+            width: 100%;
+            background-color: #E2E8F0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .teamwork-bar {
+            height: 25px;
+            background-color: #06D6A0;
+            transition: width 2s ease-out;
+            width: 0%; 
+            text-align: right;
+            color: white;
+            font-weight: bold;
+            line-height: 25px;
+            padding-right: 8px;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-[#073B4C] overflow-x-hidden">
+
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner mb-4"></div>
+        <div class="text-white text-xl">Level wird geladen...</div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8 revealed" id="main-content">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-[#118AB2] text-shadow-custom mb-2">Level Up Your Life! 🎮</h1>
+            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">Deine Schulzeit ist das ultimative Trainingslager, um im Spiel des Lebens zum Helden zu werden.</p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <section class="card md:col-span-2 lg:col-span-1 reveal-element">
+                <h2 class="text-2xl font-bold text-[#FF6B6B] mb-4">Der Endgegner: Dein Gehirn</h2>
+                <p class="mb-4 text-slate-700">Unser Gehirn liebt schnelle Belohnungen – wie in einem Videospiel. Es ist darauf programmiert, den einfachen Weg zu wählen. Aber die wichtigsten Siege erfordern Training und Geduld.</p>
+                <div class="chart-container reveal-element">
+                    <canvas id="brainPreferenceChart"></canvas>
+                </div>
+                <p class="text-center mt-4 text-sm text-slate-500">Das Diagramm zeigt, wozu unser "Steinzeit-Gehirn" tendiert: Es bevorzugt den schnellen Spaß gegenüber der langfristigen Belohnung, die durch Lernen entsteht.</p>
+            </section>
+            
+            <section class="card md:col-span-2 reveal-element">
+                <h2 class="text-2xl font-bold text-[#06D6A0] mb-4">Dein Trainingslager: Superkräfte freischalten</h2>
+                <p class="mb-6 text-slate-700">Die Schule ist kein Nebenschauplatz, sondern die Haupt-Trainingsarena. Hier sammelst du die Erfahrungspunkte (XP), die deinen Charakter für die großen Abenteuer stark machen.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-slate-50 rounded-lg reveal-element">
+                        <h3 class="text-xl font-semibold mb-2 text-[#118AB2]">Gehirn-Fitnessstudio 🧠</h3>
+                        <p class="text-slate-600">Jedes Fach, von Mathe bis Deutsch, schaltet neue Fähigkeiten frei. Ohne dieses Training bleibt dein Charakter auf Level 1.</p>
+                        <div class="chart-container h-64 max-h-64 mt-4">
+                            <canvas id="skillLevelChart"></canvas>
+                        </div>
+                        <p class="text-center mt-4 text-sm text-slate-500">Die Kurve zeigt, wie kontinuierliches Training deine Fähigkeiten über fünf Jahre exponentiell steigert.</p>
+                    </div>
+                     <div class="p-4 bg-slate-50 rounded-lg reveal-element">
+                        <h3 class="text-xl font-semibold mb-2 text-[#FFD166]">Disziplin: Die Grind-Superkraft 💪</h3>
+                        <p class="text-slate-600">Manchmal ist es anstrengend. Aber durchzuhalten, wenn es schwierig wird, ist die ultimative Superkraft. Sie ist der Schlüssel für jeden großen Erfolg.</p>
+                        <div class="chart-container h-64 max-h-64 mt-4">
+                            <canvas id="disciplineChart"></canvas>
+                        </div>
+                        <p class="text-center mt-4 text-sm text-slate-500">Dieses Diagramm vergleicht den Aufwand mit dem Ergebnis. Echte "Superkräfte" werden nur durch hohe Disziplin und konsequentes Dranbleiben freigeschaltet.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card reveal-element" id="teamworkSection">
+                <h2 class="text-2xl font-bold text-[#FFD166] mb-4">Multiplayer-Modus: Teamwork</h2>
+                 <p class="mb-4 text-slate-700">Die größten Abenteuer besteht man nie allein. In der Schule lernst du, im Team zu arbeiten, Konflikte fair zu lösen und gemeinsam Ziele zu erreichen.</p>
+                
+                <div class="p-4 bg-slate-50 rounded-lg h-full reveal-element">
+                    <h3 class="text-xl font-semibold mb-3 text-[#06D6A0]">Gemeinsamer Erfolgsfaktor</h3>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="p-3 bg-[#118AB2] text-white rounded-full shadow-md text-sm">ICH</div>
+                        <div class="flex-grow h-1 bg-slate-300 rounded-full"></div>
+                        <div class="p-3 bg-[#FF6B6B] text-white rounded-full shadow-md text-sm">TEAM</div>
+                    </div>
+
+                    <div class="teamwork-bar-container">
+                        <div class="teamwork-bar" id="teamworkBar" data-target="85">85%</div>
+                    </div>
+                    <p class="mt-2 text-sm text-slate-600">Wert: Die durchschnittliche Wichtigkeit von sozialen Skills und Teamwork im späteren Berufsleben (in Prozent).</p>
+
+                    <p class="text-center mt-4 text-sm text-slate-500">Das Training in der Gruppe ist eine direkte Investition in deinen Erfolgswert "Sozialkompetenz".</p>
+                </div>
+            </section>
+            
+            <section class="card md:col-span-2 reveal-element">
+                <h2 class="text-2xl font-bold text-[#118AB2] mb-4">Dein Skill-Baum: Spezialisierungen</h2>
+                <p class="mb-4 text-slate-700">Wusstest du, dass die Wahl deiner Fächer und Interessen schon jetzt deinen zukünftigen Skill-Baum formt? Hier siehst du, wie sich deine Kompetenzen über die Zeit in verschiedene Bereiche entwickeln.</p>
+                <div class="flex justify-center mb-6 space-x-4">
+                    <button id="toggleSkillsBtn" class="bg-[#06D6A0] text-white px-6 py-2 rounded-full font-semibold transition-all hover:bg-[#118AB2] transform hover:scale-105">Skills vergleichen</button>
+                </div>
+                <div class="chart-container h-96 max-h-96 reveal-element">
+                    <canvas id="skillComparisonChart"></canvas>
+                </div>
+                <p class="text-center mt-4 text-sm text-slate-500">Vergleiche die Entwicklung von "Harten Skills" wie Programmieren mit "Soft Skills" wie Kommunikation und Teamwork. Beide sind entscheidend, um im Leben erfolgreich zu sein.</p>
+            </section>
+
+            <section class="card reveal-element">
+                <h2 class="text-2xl font-bold text-[#FFD166] mb-4">XP-Bonus-Zonen: Das Potenzial von Fächern</h2>
+                <p class="mb-4 text-slate-700">Jedes Schulfach ist eine XP-Zone, die dir spezielle Boni für bestimmte Skill-Bereiche gibt. Entdecke, wie du in verschiedenen Fächern neue Fähigkeiten freischaltest.</p>
+                <div class="chart-container h-80 max-h-80 reveal-element">
+                    <canvas id="subjectSkillsChart"></canvas>
+                </div>
+                <p class="text-center mt-4 text-sm text-slate-500">Dieses Radard-Diagramm zeigt die Stärken verschiedener Schulfächer in Bezug auf deine Entwicklung in den Bereichen Analytik, Kreativität und Sozialkompetenz.</p>
+            </section>
+
+            <section class="card md:col-span-3 reveal-element">
+                 <h2 class="text-2xl font-bold text-[#118AB2] mb-4">Deine Reise: Eine Zeitlinie</h2>
+                <p class="mb-8 text-slate-700">Dein Lebensspiel hat bereits begonnen. Jeder Meilenstein ist ein Level-Up, das dich auf die nächste Stufe vorbereitet.</p>
+                <div class="timeline">
+                    <div class="timeline-event reveal-element">
+                        <div class="font-bold text-xl text-[#FF6B6B]">Level 1: Start</div>
+                        <p class="text-slate-600 text-sm">Einschulung und Grundschule. Hier lernst du die Basics wie Lesen, Schreiben und Rechnen – deine ersten Werkzeuge.</p>
+                    </div>
+                    <div class="timeline-event reveal-element">
+                        <div class="font-bold text-xl text-[#06D6A0]">Level 5: Neue Herausforderungen</div>
+                        <p class="text-slate-600 text-sm">Wechsel zur weiterführenden Schule. Du spezialisierst dich, lernst neue Fächer und triffst neue Team-Mitglieder.</p>
+                    </div>
+                    <div class="timeline-event reveal-element">
+                        <div class="font-bold text-xl text-[#FFD166]">Level 10: Großes Projekt</div>
+                        <p class="text-slate-600 text-sm">Das erste große Schulprojekt oder die erste wichtige Prüfung. Hier wendest du deine Fähigkeiten an.</p>
+                    </div>
+                    <div class="timeline-event reveal-element">
+                        <div class="font-bold text-xl text-[#118AB2]">Level 15: Wahl der Mission</div>
+                        <p class="text-slate-600 text-sm">Berufswahl oder Studium. Du entscheidest, welche Mission du als nächstes in Angriff nimmst.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card text-center bg-[#073B4C] text-white md:col-span-3 reveal-element">
+                 <h2 class="text-2xl font-bold text-white mb-4">Das Endziel: Sei der Held deines Spiels</h2>
+                <p class="text-slate-300 mb-6">Die Schule gibt dir die Werkzeuge. Was du daraus baust, liegt bei dir. Es ist deine Investition in deine Zukunft.</p>
+                
+                <div class="max-w-md mx-auto p-4 bg-slate-700 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-3 text-[#FFD166]">Lese-XP-Rechner</h3>
+                    <p class="text-sm text-slate-400 mb-4">Gib ein, wie viele Bücher du dieses Jahr lesen willst, und sieh dir deinen XP-Bonus an!</p>
+                    
+                    <div class="flex items-center justify-center space-x-3 mb-6">
+                        <input type="number" id="bookInput" value="1" min="0" class="w-20 text-center p-2 rounded-lg text-[#073B4C] font-bold" oninput="calculateXP()" />
+                        <span class="text-white text-xl">Bücher =</span>
+                        <span id="xpOutput" class="text-4xl font-bold text-[#06D6A0]">100</span>
+                        <span class="text-white text-xl">XP 🚀</span>
+                    </div>
+
+                    <p class="text-center text-sm text-slate-500">Hinweis: Die XP wachsen exponentiell, da jedes gelesene Buch das nächste einfacher macht.</p>
+                </div>
+
+                <div class="flex justify-center items-center my-6">
+                    <span class="text-7xl">🏆</span>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let charts = {};
+        document.addEventListener('DOMContentLoaded', () => {
+            const FONT_COLOR = '#073B4C';
+            const GRID_COLOR = 'rgba(7, 59, 76, 0.1)';
+            const PALETTE = {
+                red: '#FF6B6B',
+                yellow: '#FFD166',
+                green: '#06D6A0',
+                blue: '#118AB2',
+                darkBlue: '#073B4C'
+            };
+
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                } else {
+                    return label;
+                }
+            };
+            
+            const createChart = (canvas, config) => {
+                if (charts[canvas.id]) {
+                    charts[canvas.id].destroy();
+                }
+                const ctx = canvas.getContext('2d');
+                charts[canvas.id] = new Chart(ctx, config);
+                return charts[canvas.id];
+            }
+
+            const createBrainPreferenceChart = (canvas) => {
+                createChart(canvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Schneller Spaß (z.B. Gaming)', 'Langfristiger Erfolg (z.B. Lernen)'],
+                        datasets: [{
+                            label: 'Gehirn-Fokus',
+                            data: [70, 30],
+                            backgroundColor: [PALETTE.red, PALETTE.green],
+                            borderColor: '#ffffff',
+                            borderWidth: 4,
+                            hoverOffset: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: FONT_COLOR, font: { size: 12 } }
+                            },
+                            tooltip: { callbacks: { title: tooltipTitleCallback } }
+                        }
+                    }
+                });
+            };
+            
+            const createSkillLevelChart = (canvas) => {
+                createChart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: ['Start', '1 Jahr', '2 Jahre', '3 Jahre', '4 Jahre', '5 Jahre'],
+                        datasets: [{
+                            label: 'Deine Skill Points',
+                            data: [10, 250, 500, 800, 1200, 1800],
+                            fill: true,
+                            backgroundColor: 'rgba(6, 214, 160, 0.2)',
+                            borderColor: PALETTE.green,
+                            tension: 0.4,
+                            pointBackgroundColor: PALETTE.green,
+                            pointRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, ticks: { color: FONT_COLOR }, grid: { color: GRID_COLOR } },
+                            x: { ticks: { color: FONT_COLOR }, grid: { color: GRID_COLOR } }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { callbacks: { title: tooltipTitleCallback } }
+                        }
+                    }
+                });
+            };
+
+            const createDisciplineChart = (canvas) => {
+                createChart(canvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Wenig Aufwand', 'Mittlerer Aufwand', ['Hoher Aufwand', '(Disziplin)']],
+                        datasets: [{
+                            label: 'Freigeschaltete Fähigkeiten',
+                            data: [15, 45, 100],
+                            backgroundColor: [PALETTE.yellow, PALETTE.blue, PALETTE.red],
+                            borderRadius: 6
+                        }]
+                    },
+                     options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, ticks: { color: FONT_COLOR }, grid: { color: GRID_COLOR } },
+                            x: { ticks: { color: FONT_COLOR }, grid: { display: false } }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { callbacks: { title: tooltipTitleCallback } }
+                        }
+                    }
+                });
+            };
+
+            const createSkillComparisonChart = (canvas) => {
+                const hardSkillsData = [50, 65, 80, 95];
+                const softSkillsData = [40, 75, 90, 100];
+                const labels = ['Jahr 1', 'Jahr 3', 'Jahr 5', 'Jahr 7'];
+                
+                createChart(canvas, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Harte Skills (z.B. Mathe, Programmieren)',
+                            data: hardSkillsData,
+                            backgroundColor: PALETTE.blue,
+                            borderRadius: 6,
+                        }, {
+                            label: 'Soziale Skills (z.B. Kommunikation, Teamwork)',
+                            data: softSkillsData,
+                            backgroundColor: PALETTE.green,
+                            borderRadius: 6,
+                            hidden: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { ticks: { color: FONT_COLOR } },
+                            y: { beginAtZero: true, ticks: { color: FONT_COLOR }, grid: { color: GRID_COLOR } }
+                        },
+                        plugins: {
+                            legend: { position: 'top', labels: { color: FONT_COLOR } },
+                            tooltip: { callbacks: { title: tooltipTitleCallback } }
+                        }
+                    }
+                });
+            };
+            
+            const toggleButton = document.getElementById('toggleSkillsBtn');
+            if (toggleButton) {
+                toggleButton.onclick = () => { 
+                    const chartId = 'skillComparisonChart';
+                    if (charts[chartId]) {
+                        const chart = charts[chartId];
+                        chart.data.datasets[1].hidden = !chart.data.datasets[1].hidden;
+                        chart.update();
+                    }
+                };
+            }
+
+            const createSubjectSkillsChart = (canvas) => {
+                createChart(canvas, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Analytik', 'Kreativität', 'Sozialkompetenz', 'Problem-lösung', 'Kommunikation'],
+                        datasets: [{
+                            label: 'Mathe & Naturwissenschaften',
+                            data: [95, 20, 40, 85, 30],
+                            backgroundColor: 'rgba(17, 138, 178, 0.2)',
+                            borderColor: PALETTE.blue,
+                            pointBackgroundColor: PALETTE.blue,
+                        }, {
+                            label: 'Kunst & Musik',
+                            data: [30, 90, 60, 40, 50],
+                            backgroundColor: 'rgba(255, 209, 102, 0.2)',
+                            borderColor: PALETTE.yellow,
+                            pointBackgroundColor: PALETTE.yellow,
+                        }, {
+                            label: 'Deutsch & Fremdsprachen',
+                            data: [50, 40, 90, 60, 95],
+                            backgroundColor: 'rgba(6, 214, 160, 0.2)',
+                            borderColor: PALETTE.green,
+                            pointBackgroundColor: PALETTE.green,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: { color: GRID_COLOR },
+                                grid: { color: GRID_COLOR },
+                                pointLabels: { color: FONT_COLOR },
+                                ticks: { display: false }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: FONT_COLOR, boxWidth: 15 } },
+                            tooltip: { callbacks: { title: tooltipTitleCallback } }
+                        }
+                    }
+                });
+            };
+
+            window.calculateXP = function() {
+                const inputElement = document.getElementById('bookInput');
+                const outputElement = document.getElementById('xpOutput');
+                let books = parseInt(inputElement.value, 10);
+                
+                if (isNaN(books) || books < 0) {
+                    outputElement.textContent = 0;
+                    return;
+                }
+                
+                // Exponentielle XP-Berechnung: (Basis-XP) * (Anzahl)^1.5
+                // 1 Buch = 100 XP
+                // 5 Bücher = 100 * 5^1.5 ≈ 1118 XP
+                // 10 Bücher = 100 * 10^1.5 ≈ 3162 XP
+                
+                if (books === 0) {
+                    outputElement.textContent = 0;
+                } else {
+                    const baseXP = 100;
+                    const exponentialFactor = 1.5;
+                    let totalXP = Math.round(baseXP * Math.pow(books, exponentialFactor));
+                    outputElement.textContent = totalXP.toLocaleString('de-DE');
+                }
+            };
+            
+            const animateBar = (element) => {
+                const targetPercentage = element.getAttribute('data-target');
+                element.style.width = `${targetPercentage}%`;
+            };
+
+            const counterObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            const teamworkObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const bar = document.getElementById('teamworkBar');
+                        if (bar) animateBar(bar);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            const chartObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const canvas = entry.target.querySelector('canvas');
+                        if (canvas) {
+                            const chartId = canvas.id;
+                            if (chartId === 'brainPreferenceChart') createBrainPreferenceChart(canvas);
+                            if (chartId === 'skillLevelChart') createSkillLevelChart(canvas);
+                            if (chartId === 'disciplineChart') createDisciplineChart(canvas);
+                            if (chartId === 'skillComparisonChart') createSkillComparisonChart(canvas);
+                            if (chartId === 'subjectSkillsChart') createSubjectSkillsChart(canvas);
+                        }
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            document.querySelectorAll('.reveal-element').forEach(el => {
+                if (el.querySelector('canvas')) {
+                    chartObserver.observe(el);
+                } else if (el.hasAttribute('data-target')) {
+                    counterObserver.observe(el);
+                } else {
+                    revealObserver.observe(el);
+                }
+            });
+
+            const teamworkSection = document.getElementById('teamworkSection');
+            if (teamworkSection) {
+                teamworkObserver.observe(teamworkSection);
+            }
+
+            window.addEventListener('load', () => {
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => loadingScreen.style.display = 'none', 500);
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Zucker-Falle: Ein Abenteuer</title>
+    <!-- Lade Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lade "Inter" Schriftart -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap">
+        <style>
+        /* Wende die Inter-Schriftart als Standard an */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Kleiner CSS-Trick, um den Pfeil der <details>-Box zu gestalten */
+        details > summary {
+            list-style: none; /* Standard-Pfeil entfernen */
+            cursor: pointer;
+        }
+        details > summary::before {
+            content: '▶'; /* Ein "Play"-Symbol als Pfeil */
+            margin-right: 0.5rem;
+            display: inline-block;
+            transition: transform 0.2s ease-in-out; /* Sanfterer Übergang */
+        }
+        details[open] > summary::before {
+            transform: rotate(90deg); /* Pfeil drehen, wenn geöffnet */
+        }
+
+        /* NEU: "Hammer-Ebene" Animation für Interaktivität */
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(29, 78, 216, 0); /* Tailwind blue-700, aber transparent */
+            }
+            50% {
+                /* Ein sanfter, blauer Schimmer, der Aufmerksamkeit erregt */
+                box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.4); /* Tailwind blue-500 mit mehr Weite */
+            }
+        }
+
+        .interactive-glow {
+            /* Animation anwenden, um Klickbarkeit zu signalisieren */
+            animation: pulse-glow 2.5s infinite ease-in-out;
+            border-radius: 0.5rem; /* KORRIGIERT: Abrundung an rounded-lg (0.5rem) angepasst */
+        }
+
+        /* NEU: Barrierefreiheit aus deiner Liste (Bewegung reduzieren) */
+        @media (prefers-reduced-motion: reduce) {
+            .interactive-glow {
+                animation: none;
+            }
+            details > summary::before {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-slate-800 leading-relaxed">
+
+    <!-- Haupt-Container -->
+    <div class="max-w-4xl mx-auto p-4 md:p-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-black text-blue-700 mb-4">Die Zucker-Falle!</h1>
+            <p class="text-xl md:text-2xl font-semibold text-blue-900">😲 Ein Abenteuer für deinen Körper 😲</p>
+            <p class="text-lg mt-4 max-w-2xl mx-auto">Hey! Du isst gerne Süßigkeiten, oder? Das ist total normal! Aber hast du dich mal gefragt, was Zucker *wirklich* in deinem Körper macht, nachdem du ihn geschluckt hast? Lass es uns herausfinden!</p>
+        </header>
+
+        <!-- Interaktives Quiz -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 border-4 border-orange-400">
+            <h2 class="text-3xl font-bold text-orange-600 mb-6 text-center">Rate-Spiel: Wo versteckt sich der Zucker?</h2>
+            <p class="text-center mb-6">Zucker ist ein Meister im Versteckspiel. Er ist nicht nur in Süßigkeiten! Klick auf die Knöpfe, um zu sehen, wie viele Zuckerwürfel (fast) drinstecken.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Quiz-Element 1: Limo -->
+                <div class="bg-orange-50 p-5 rounded-xl shadow-md">
+                    <p class="text-2xl font-bold mb-3 text-center">🥤<br>1 Glas Limo (0,3l)</p>
+                    <details class="mt-2">
+                        <summary class="font-bold text-lg text-orange-700 bg-orange-200 px-4 py-2 rounded-lg text-center hover:bg-orange-300 transition-all interactive-glow">Zeig's mir!</summary>
+                        <div class="mt-4 bg-white p-4 rounded-lg border border-orange-200">
+                            <p class="text-xl font-bold text-center text-orange-800">Ungefähr 10 Stück Würfelzucker!</p>
+                            <p class="text-center mt-2">Das ist so viel wie in einer ganzen Handvoll Gummibärchen.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- Quiz-Element 2: Ketchup -->
+                <div class="bg-red-50 p-5 rounded-xl shadow-md">
+                    <p class="text-2xl font-bold mb-3 text-center">🍅<br>1 kleiner Klecks Ketchup</p>
+                    <details class="mt-2">
+                        <summary class="font-bold text-lg text-red-700 bg-red-200 px-4 py-2 rounded-lg text-center hover:bg-red-300 transition-all interactive-glow">Zeig's mir!</summary>
+                        <div class="mt-4 bg-white p-4 rounded-lg border border-red-200">
+                            <p class="text-xl font-bold text-center text-red-800">Ungefähr 1 Stück Würfelzucker!</p>
+                            <p class="text-center mt-2">Ziemlich versteckt, oder? Er ist oft in salzigen Soßen.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- Quiz-Element 3: Müsli -->
+                <div class="bg-yellow-50 p-5 rounded-xl shadow-md">
+                    <p class="text-2xl font-bold mb-3 text-center">🥣<br>1 Schale "Knusper-Müsli"</p>
+                    <details class="mt-2">
+                        <summary class="font-bold text-lg text-yellow-700 bg-yellow-200 px-4 py-2 rounded-lg text-center hover:bg-yellow-300 transition-all interactive-glow">Zeig's mir!</summary>
+                        <div class="mt-4 bg-white p-4 rounded-lg border border-yellow-200">
+                            <p class="text-xl font-bold text-center text-yellow-800">Oft 5-7 Stück Würfelzucker!</p>
+                            <p class="text-center mt-2">Obwohl es gesund aussieht, ist viel Zucker drin.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- Quiz-Element 4: Apfel -->
+                <div class="bg-green-50 p-5 rounded-xl shadow-md">
+                    <p class="text-2xl font-bold mb-3 text-center">🍎<br>1 Apfel</p>
+                    <details class="mt-2">
+                        <summary class="font-bold text-lg text-green-700 bg-green-200 px-4 py-2 rounded-lg text-center hover:bg-green-300 transition-all interactive-glow">Zeig's mir!</summary>
+                        <div class="mt-4 bg-white p-4 rounded-lg border border-green-200">
+                            <p class="text-xl font-bold text-center text-green-800">Enthält auch Zucker (Fruchtzucker).</p>
+                            <p class="text-center mt-2"><strong>Aber:</strong> Der Apfel bringt tolle "Helfer" (Vitamine & Ballaststoffe) mit, die deinem Körper helfen. Das ist der gute Zucker!</p>
+                        </div>
+                    </details>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Kapitel 1: Gehirn (Abhängigkeit) -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-8">
+            <h2 class="text-3xl font-bold text-red-600 mb-4">🎢 Kapitel 1: Deine Gehirn-Achterbahn (Die Zucker-Falle)</h2>
+            <p class="text-lg mb-4">Wenn du Zucker isst, passiert etwas Cooles in deinem Gehirn: Es schüttet eine "Glücks-Chemikalie" aus. Du fühlst dich super! <span class="font-bold">Das ist der "Zucker-Kick".</span></p>
+            <p class="text-lg mb-4">Aber Achtung: Gleich geht's bergab! Wenn der Kick vorbei ist, stürzt deine Laune ab. Du wirst müde, zappelig und vielleicht sogar grummelig. Dein Gehirn ruft dann: "Hey! Ich will wieder glücklich sein! Gib mir MEHR ZUCKER!"</p>
+            <p class="text-lg font-semibold">Das ist die Zucker-Falle. Dein Gehirn gewöhnt sich daran und will immer mehr. Das nennt man "süchtig sein".</p>
+
+            <details class="mt-4 bg-red-50 p-4 rounded-lg interactive-glow">
+                <summary class="font-bold text-lg text-red-800">Warum werde ich nach Süßem so müde?</summary>
+                <p class="mt-3 text-md text-red-900">Dein Körper muss den ganzen Zucker schnell aufräumen. Dafür schickt er ein "Aufräum-Hormon" (Insulin) los. Dieses Hormon räumt so gründlich auf, dass dein Blutzucker manchmal *zu tief* sinkt. Und wenn du zu wenig Zucker im Blut hast, fühlst du dich schlapp und müde. Das ist der "Zucker-Crash".</p>
+            </details>
+        </section>
+
+        <!-- Kapitel 2: Leber (Krank werden) -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-8">
+            <h2 class="text-3xl font-bold text-purple-600 mb-4">🥷 Kapitel 2: Der Zucker-Geheimagent (Deine Leber wird müde)</h2>
+            <p class="text-lg mb-4">Stell dir deine Leber wie eine fleißige Fabrik vor. Ein Teil vom Zucker (die Glukose) ist normale Energie, die dein Körper verbrennt. Aber der andere Teil (die Fruktose) ist wie ein <span class="font-bold">Geheimagent, der sich an allen Wachen vorbeischleicht</span> und direkt in die Fabrik stürmt.</p>
+            <p class="text-lg mb-4">Deine Leber-Fabrik ist total überfordert mit dem Ansturm! Sie weiß nicht, wohin damit, und ruft: "Panik! Wir müssen das Zeug schnell wegpacken!" Die einzige Lösung, die sie kennt: <span class="font-bold">Sie verwandelt den Zucker-Agenten in FETT.</span></p>
+            <p class="text-lg font-semibold">Wenn das zu oft passiert, wird deine Leber selbst fettig und müde (das nennt man "Fettleber"). Sie kann dann ihre anderen wichtigen Jobs nicht mehr richtig machen, und das macht auf Dauer den ganzen Körper krank.</p>
+
+            <details class="mt-4 bg-purple-50 p-4 rounded-lg interactive-glow">
+                <summary class="font-bold text-lg text-purple-800">Aber ich bin doch nicht dick. Ist das trotzdem schlimm?</summary>
+                <p class="mt-3 text-md text-purple-900">Gute Frage! Das Tückische ist: Die Leber kann auch fettig werden, wenn man von außen noch ganz normal aussieht. Das nennt man manchmal "schlank-krank". Der Zucker-Agent arbeitet im Geheimen. Deshalb ist es so wichtig, dass alle Kinder (und Erwachsene!) aufpassen, nicht nur die, die schon schwerer sind.</p>
+            </details>
+        </section>
+
+        <!-- Kapitel 3: Zähne (Schaden) -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-8">
+            <h2 class="text-3xl font-bold text-teal-600 mb-4">👾 Kapitel 3: Die Zahn-Monster-Party (Aua, Karies!)</h2>
+            <p class="text-lg mb-4">In deinem Mund wohnen Millionen kleiner Wesen (Bakterien). Die meisten sind okay, aber ein paar sind echte "Zahn-Monster". Und diese Monster <span class="font-bold">LIEBEN Zucker über alles!</span></p>
+            <p class="text-lg mb-4">Wenn du Zucker isst, feiern die Monster eine riesige Party. Und als "Dankeschön" für das tolle Essen... pupsen sie SÄURE auf deine Zähne. Ja, echt!</p>
+            <p class="text-lg font-semibold">Diese Säure ist wie ein winziger Bohrer. Sie frisst kleine Löcher in deine Zähne. Das ist Karies. Und Karies tut weh und bedeutet: ab zum Zahnarzt!</p>
+        </section>
+
+        <!-- Kapitel 4: Körper (Schaden) -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-8">
+            <h2 class="text-3xl font-bold text-pink-600 mb-4">🤸‍♂️ Kapitel 4: Der Gummiband-Trick (Dein Körper wird steif)</h2>
+            <p class="text-lg mb-4">Dein Körper ist voller "Gummibänder" (Kollagen). Sie halten deine Haut straff, deine Gelenke beweglich und deine Blut-Röhren (Adern) schön elastisch. Sie sorgen dafür, dass alles gut funktioniert.</p>
+            <p class="text-lg mb-4">Zucker ist wie <span class="font-bold">klebriger Sirup, der auf diese Gummibänder tropft.</span> Der Sirup wird hart und macht die Gummibänder steif und brüchig. Sie können sich nicht mehr richtig bewegen.</p>
+            <p class="text-lg font-semibold">Das nennt man "Verzuckerung". Es lässt deine Haut schneller alt aussehen und macht es für dein Herz schwerer zu pumpen, weil die "Röhren" steif werden. Der Zucker macht deinen Körper von innen alt und kaputt.</p>
+
+            <details class="mt-4 bg-pink-50 p-4 rounded-lg interactive-glow">
+                <summary class="font-bold text-lg text-pink-800">Macht Zucker mich *wirklich* älter?</summary>
+                <p class="mt-3 text-md text-pink-900">Er lässt deine Haut schneller Falten bekommen, weil die "Gummibänder" müde werden. Aber wichtiger ist: Er macht deine Adern von innen "älter" und steifer. Dein Herz und dein Körper müssen viel härter arbeiten. "Älter" bedeutet hier also "weniger fit" und "schneller kaputt".</p>
+            </details>
+        </section>
+        
+        <!-- Kapitel 5: Der Teufelskreis -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-8">
+            <h2 class="text-3xl font-bold text-indigo-600 mb-4">🌀 Kapitel 5: Der Teufelskreis (Die Grummel-Falle)</h2>
+            <p class="text-lg mb-4">Jetzt setzen wir alles zusammen: Der Zucker macht dich müde (Gehirn-Achterbahn) und deine Leber verwandelt ihn in Fett (Geheimagent). Wenn der Körper dadurch schwerer wird, fühlst du dich oft noch müder und schlapper.</p>
+            <p class="text-lg mb-4">Das extra Gewicht ist anstrengend für deine Beine und deinen Rücken. Auf 'Rausgehen und Fangen spielen' hast du gar keine Lust mehr. Es ist viel gemütlicher, drinnen vor dem Computer oder Fernseher zu sitzen.</p>
+            <p class="text-lg mb-4">Und weil du müde und grummelig bist, was ruft dein Gehirn? <span class="font-bold">"ICH WILL DEN GLÜCKS-KICK!"</span> Also isst du mehr Süßigkeiten, Chips oder trinkst eine Limo, um dich kurz besser zu fühlen.</p>
+            <p class="text-lg font-semibold">Das ist der Teufelskreis. Der Zucker macht dich müde und schwer, und weil du müde und schwer bist, willst du mehr Zucker. Ein echter Trick!</p>
+            
+            <details class="mt-4 bg-indigo-50 p-4 rounded-lg interactive-glow">
+                <summary class="font-bold text-lg text-indigo-800">Warum tut mir alles weh, wenn ich müde bin?</summary>
+                <p class="mt-3 text-md text-indigo-900">Das extra Gewicht drückt auf deine Gelenke (wie Knie und Füße). Aber auch der Zucker selbst (der "Gummiband-Trick") kann dafür sorgen, dass dein Körper sich steifer anfühlt. Wenn du dich dann nicht bewegst, werden die Muskeln schwach und alles fühlt sich noch schlapper an. Das ist die blöde Kombination.</p>
+            </details>
+        </section>
+
+
+        <!-- Kapitel 6: Verantwortung (Eltern) -->
+        <section class="bg-blue-100 border-l-8 border-blue-600 p-6 md:p-8 rounded-lg shadow-xl mb-8">
+            <h2 class="text-3xl font-bold text-blue-800 mb-4">🦸 Kapitel 6: Deine Eltern, die Super-Helden!</h2>
+            <p class="text-lg mb-4">Puh, das klingt alles ganz schön gruselig, oder? Aber weißt du was? Du musst das nicht alles alleine wissen. Dein Körper und dein Gehirn lernen noch – und genau dafür sind deine Eltern da!</p>
+            <p class="text-lg mb-4">Die Zucker-Falle ist super-trickreich. Selbst viele Erwachsene tappen hinein. Kleine Kinder können das noch gar nicht alleine regulieren. <span class="font-bold">Deshalb sind Mama und Papa deine "Team-Kapitäne".</span></p>
+            <p class="text-lg font-semibold text-blue-900">Sie sind dafür verantwortlich, dir zu helfen, ein starkes Team-Mitglied für deinen Körper zu werden. Sie helfen dir, den versteckten Zucker zu finden, kochen gesundes Essen und sorgen dafür, dass die Zahn-Monster nicht zu oft Party feiern können. Sie sind deine Beschützer vor der Zucker-Falle!</p>
+        </section>
+
+        <!-- Abschluss: Was tun? -->
+        <section class="bg-green-100 border-l-8 border-green-600 p-6 md:p-8 rounded-lg shadow-xl">
+            <h2 class="text-3xl font-bold text-green-800 mb-4">✅ Kapitel 7: Was kannst DU jetzt tun?</h2>
+            <p class="text-lg mb-4">Du musst nicht sofort mit allem aufhören! Aber du kannst ein Körper-Held werden. Hier sind 3 einfache Missionen:</p>
+            <ul class="list-disc list-inside text-lg space-y-3">
+                
+                <!-- PUNKT 1 mit <details> -->
+                <li class="font-semibold"><span class="text-2xl mr-2">💧</span> <span class="font-bold">Werde ein Wasser-Trinker!</span> Wenn du Durst hast, ist Wasser der beste Super-Treibstoff.
+                    <details class="mt-2 bg-green-200 p-4 rounded-lg ml-6 interactive-glow">
+                        <summary class="font-bold text-md text-green-900">Moment mal... Warum ist Saft auch eine Süßigkeit?</summary>
+                        <p class="mt-3 text-md text-green-900">Wenn du einen Apfel isst, hat er tolle 'Helfer' (Ballaststoffe), die den Zucker bremsen. Im Apfel*saft* sind diese Helfer alle weg! Übrig bleibt nur das Zuckerwasser. Dein Körper trinkt Saft (auch Schorle!) fast genauso schnell wie Limo. Eistee, Kakao und 'Frühstücksdrinks' sind übrigens auch fast immer flüssige Süßigkeiten.</p>
+                    </details>
+                </li>
+                
+                <!-- PUNKT 2 mit <details> -->
+                <li class="font-semibold"><span class="text-2xl mr-2">🍎</span> <span class="font-bold">Iss den Regenbogen!</span> Ein Apfel oder eine Karotte haben zwar auch Zucker, aber sie bringen ihr ganzes Team mit.
+                    <details class="mt-2 bg-green-200 p-4 rounded-lg ml-6 interactive-glow">
+                        <summary class="font-bold text-md text-green-900">Was ist ein "schlauer" Snack für zwischendurch?</summary>
+                        <p class="mt-3 text-md text-green-900">Ein "dummer" Snack ist z.B. ein Keks oder ein Müsliriegel – der gibt dir nur einen kurzen 'Zucker-Kick' und macht dich schnell wieder müde. Ein 'schlauer' Snack bringt sein ganzes Team mit (Vitamine, Helfer):<br>
+                        • Eine Handvoll Nüsse<br>
+                        • Ein paar Gurken- oder Paprika-Sticks<br>
+                        • Ein hartgekochtes Ei oder ein Stück Käse<br>
+                        Diese Dinge geben dir echte, langanhaltende Superhelden-Energie!</p>
+                    </details>
+                </li>
+
+                <!-- PUNKT 3 überarbeitet -->
+                <li class="font-semibold"><span class="text-2xl mr-2">🕵️‍♀️</span> <span class="font-bold">Werde zum Zucker-Detektiv!</span> Manchmal versteckt sich Zucker selbst vor Mama und Papa. Schnapp dir eine Packung (Müsli, Ketchup, Joghurt) und bitte einen Erwachsenen, dir die 'Zutatenliste' vorzulesen.
+                    <details class="mt-2 bg-green-200 p-4 rounded-lg ml-6 interactive-glow">
+                        <summary class="font-bold text-md text-green-900">Wie finde ich den Zucker auf der Liste?</summary>
+                        <p class="mt-3 text-md text-green-900">Hier ist dein Detektiv-Trick: Je <strong>weiter oben</strong> etwas auf der Liste steht, desto <strong>mehr</strong> ist davon drin. Schau mal:<br>
+                        1. Steht 'Zucker' (oder 'Sirup', 'Fruktose', 'Dextrose') an der 1. oder 2. Stelle? <strong>ALARM!</strong> Das ist eine Süßigkeit.<br>
+                        2. Steht Zucker ganz weit hinten? Puh, Glück gehabt.<br>
+                        Du wirst staunen, wo du ihn überall findest! Wetten?</p>
+                    </details>
+                </li>
+            </ul>
+        </section>
+
+    </div> <!-- Ende Haupt-Container -->
+
+</body>
+</html>
+
