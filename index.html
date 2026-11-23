@@ -16,7 +16,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
-<!-- 0.4.0 (Gemini, 21.11.2026): 3D-Planeten-Medaillons, 3D-UFO & 3D-Stationskarten (synchron mit Sternenstaub-Bibliothek).
+<!-- 0.4.1 (Claude, 23.11.2026): neuer Planet „Deine Erde“ → Mein Ort (leiser-ort.github.io/Mein-Ort).
+     0.4.0 (Gemini, 21.11.2026): 3D-Planeten-Medaillons, 3D-UFO & 3D-Stationskarten (synchron mit Sternenstaub-Bibliothek).
      0.3.0 (Claude, 21.11.2026): Startbildschirm tiefer/edler.
      UFO21 Sternenstaub-Kinder 0.1.0 (Claude, 20.11.2026): Die App ist die Reise. -->
 <style>
@@ -226,7 +227,10 @@ const PLANETEN = [
    s:[{e:"🎮",bild:"levelup",t:"Level Up Your Life",i:"Tipps für die Schule.",u:"seiten/level-up.html"}]},
   {id:"papa", n:"Sternenkarte", e:"🌌", bild:"sternenkarte", x:1260, y:1480, r:72, a:"#7cc4ff", b:"#1e3a7a", ring:true,
    i:"Das Tor zur großen Sternenkarte – alle 28 Universen im Überblick!",
-   s:[{e:"🌌",bild:"sternenkarte",t:"Die Sternenkarte (28 Universen)",i:"Die große Wissens-Galaxie öffnen.",u:G+"die-sternenkarte/"}]}
+   s:[{e:"🌌",bild:"sternenkarte",t:"Die Sternenkarte (28 Universen)",i:"Die große Wissens-Galaxie öffnen.",u:G+"die-sternenkarte/"}]},
+  {id:"erde", n:"Deine Erde", e:"🌍", bild:"erde", x:1960, y:1480, r:76, a:"#5ad1ff", b:"#1f6b3a",
+   i:"Ein stiller Ort nur für dich. Hier darfst du einfach ankommen.",
+   s:[{e:"🌍",t:"Mein Ort",i:"Durchatmen, entdecken, ankommen.",u:"https://leiser-ort.github.io/Mein-Ort/"}]}
 ];
 const WELT = {w:2400, h:1700};
 const UFO_FARBEN = ["#5ef0c0","#ff8fb8","#ffd54a","#7cc4ff","#b48cff"];
