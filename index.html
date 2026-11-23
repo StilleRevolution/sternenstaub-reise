@@ -16,7 +16,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
-<!-- 0.4.1 (Claude, 23.11.2026): neuer Planet „Deine Erde“ → Mein Ort (leiser-ort.github.io/Mein-Ort).
+<!-- 0.4.2 (Claude, 23.11.2026): Sternenkarte als selbst gezeichnetes Wurmloch (kein Bild).
+     0.4.1 (Claude, 23.11.2026): neuer Planet „Deine Erde“ → Mein Ort (leiser-ort.github.io/Mein-Ort).
      0.4.0 (Gemini, 21.11.2026): 3D-Planeten-Medaillons, 3D-UFO & 3D-Stationskarten (synchron mit Sternenstaub-Bibliothek).
      0.3.0 (Claude, 21.11.2026): Startbildschirm tiefer/edler.
      UFO21 Sternenstaub-Kinder 0.1.0 (Claude, 20.11.2026): Die App ist die Reise. -->
@@ -225,8 +226,8 @@ const PLANETEN = [
   {id:"level", n:"Level-Up-Station", e:"🎮", bild:"levelup", x:2140, y:960, r:60, a:"#7cc4ff", b:"#1d4a7a", station:true,
    i:"Trainingslager für die Schule – für große Piloten.",
    s:[{e:"🎮",bild:"levelup",t:"Level Up Your Life",i:"Tipps für die Schule.",u:"seiten/level-up.html"}]},
-  {id:"papa", n:"Sternenkarte", e:"🌌", bild:"sternenkarte", x:1260, y:1480, r:72, a:"#7cc4ff", b:"#1e3a7a", ring:true,
-   i:"Das Tor zur großen Sternenkarte – alle 28 Universen im Überblick!",
+  {id:"papa", n:"Sternenkarte", e:"🌀", bild:"", wurmloch:true, x:1260, y:1480, r:72, a:"#b48cff", b:"#0a0626",
+   i:"Ein Wurmloch! Es zieht dich ganz woanders hin – zur großen Sternenkarte mit allen 28 Universen.",
    s:[{e:"🌌",bild:"sternenkarte",t:"Die Sternenkarte (28 Universen)",i:"Die große Wissens-Galaxie öffnen.",u:G+"die-sternenkarte/"}]},
   {id:"erde", n:"Deine Erde", e:"🌍", bild:"erde", x:1960, y:1480, r:76, a:"#5ad1ff", b:"#1f6b3a",
    i:"Ein stiller Ort nur für dich. Hier darfst du einfach ankommen.",
@@ -363,10 +364,67 @@ const schnuppen = [];   // Sternschnuppen (fangbar)
 function welt2bild(x,y,tiefe=1){ return [ (x-kam.x)*tiefe + BW/2, (y-kam.y)*tiefe + BH/2 ]; }
 function bild2welt(px,py){ return [ px - BW/2 + kam.x, py - BH/2 + kam.y ]; }
 
+/* Wurmloch (0.4.2, Claude): rein gezeichnet – Strudel, Lichtring, eingesogene Sterne */
+const WURM_STERNE = Array.from({length:46}, (_,i)=>({w:Math.random()*Math.PI*2, v:.25+Math.random()*.75, s:Math.random(), g:.8+Math.random()*1.6}));
+function wurmlochMalen(p, x, y, t){
+  const R = p.r*1.75, kern = p.r*.34, dreh = t/1600;
+  cx.save();
+  // tiefer Hof: Licht wird nach innen dunkler
+  const hof = cx.createRadialGradient(x,y,kern*.6,x,y,R*1.35);
+  hof.addColorStop(0,"rgba(0,0,0,1)"); hof.addColorStop(.18,"rgba(10,4,40,.95)");
+  hof.addColorStop(.45,"rgba(90,50,200,.35)"); hof.addColorStop(.75,"rgba(40,140,255,.12)"); hof.addColorStop(1,"transparent");
+  cx.fillStyle=hof; cx.beginPath(); cx.arc(x,y,R*1.35,0,7); cx.fill();
+  // Spiralarme (logarithmische Spirale), drehen sich nach innen
+  cx.lineCap="round";
+  const ARME = 7;
+  for(let k=0;k<ARME;k++){
+    const basis = dreh + k*2*Math.PI/ARME;
+    let vorher = null;
+    for(let j=0;j<=36;j++){
+      const q = j/36, r = R*(1-q) + kern*q;
+      const w = basis + q*4.4;
+      const px = x + Math.cos(w)*r, py = y + Math.sin(w)*r*.82;
+      if(vorher){
+        const hell = q;  // innen heller
+        cx.strokeStyle = k%2 ? `rgba(120,200,255,${.08+hell*.55})` : `rgba(190,140,255,${.08+hell*.6})`;
+        cx.lineWidth = 1 + (1-q)*5;
+        cx.beginPath(); cx.moveTo(vorher[0],vorher[1]); cx.lineTo(px,py); cx.stroke();
+      }
+      vorher=[px,py];
+    }
+  }
+  // gekippte Lichtringe, pulsierend
+  for(let i=0;i<3;i++){
+    const pr = kern*(1.5+i*.9) + Math.sin(t/700+i)*3;
+    cx.strokeStyle = `rgba(${i==1?"120,220,255":"200,160,255"},${.55-i*.14})`;
+    cx.lineWidth = 2.2-i*.5;
+    cx.beginPath(); cx.ellipse(x,y,pr*1.25,pr*.62, -.35 + Math.sin(t/2600)*.08, 0, Math.PI*2); cx.stroke();
+  }
+  // Sterne, die hineingesogen werden
+  for(const st of WURM_STERNE){
+    const lauf = ((t/4200)*st.v + st.s) % 1;          // 0 = außen, 1 = im Kern
+    const r = R*1.25*(1-lauf) + kern*.9*lauf;
+    const w = st.w + dreh*1.4 + lauf*lauf*7;          // dreht innen schneller
+    const sx = x + Math.cos(w)*r, sy = y + Math.sin(w)*r*.82;
+    const a = Math.sin(lauf*Math.PI);
+    cx.fillStyle = `rgba(255,255,255,${a*.9})`;
+    cx.beginPath(); cx.arc(sx,sy,st.g*(1-lauf*.6),0,7); cx.fill();
+  }
+  // schwarzer Kern mit Photonenring
+  cx.fillStyle="#000"; cx.beginPath(); cx.arc(x,y,kern,0,7); cx.fill();
+  cx.shadowColor="#c9a8ff"; cx.shadowBlur=22;
+  cx.strokeStyle=`rgba(235,220,255,${.75+.2*Math.sin(t/400)})`; cx.lineWidth=2.6;
+  cx.beginPath(); cx.arc(x,y,kern*1.04,0,7); cx.stroke();
+  cx.shadowBlur=0;
+  cx.restore();
+}
+
 function planetMalen(p, t){
   const [x,y] = welt2bild(p.x,p.y);
   if(x<-p.r*3.2||x>BW+p.r*3.2||y<-p.r*3.2||y>BH+p.r*3.2) return;
   const besucht = !!S.planeten[p.id];
+  const rK = p.station ? p.r*.78 : p.r;
+  if(p.wurmloch){ wurmlochMalen(p, x, y, t); } else {
   // 3D-Atmosphären-Leuchten (unbesuchte pulsieren kräftiger)
   const puls = besucht ? .32 : .45+.22*Math.sin(t/480+p.x);
   const gl = cx.createRadialGradient(x,y,p.r*.55,x,y,p.r*2.25);
@@ -437,6 +495,8 @@ function planetMalen(p, t){
     cx.restore();
   }
 
+  } // Ende Kugel (kein Wurmloch)
+
   // Name & kleines Emoji-Schild unter dem Planeten
   const labelY = y + p.r + (p.ring ? 30 : 24);
   const labelText = (p.zu ? "🔒 " : p.e + " ") + p.n;
@@ -456,7 +516,7 @@ function planetMalen(p, t){
   cx.restore();
 
   if(besucht){
-    const fx = x + rKugel*.74, fy = y - rKugel*.74;
+    const fx = x + rK*.74, fy = y - rK*.74;
     cx.save();
     cx.fillStyle="rgba(12,22,54,.92)"; cx.strokeStyle="#5ef0c0"; cx.lineWidth=2;
     cx.beginPath(); cx.arc(fx,fy,15,0,7); cx.fill(); cx.stroke();
